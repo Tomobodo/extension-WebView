@@ -3,9 +3,11 @@
 	
 	<ndll name="openflwebview" />
 	
+	<java path="project/android" if="android" />
+	
 	<!-- Use the following for an Android Java extension, not needed otherwise -->
 	
-	<dependency name="openflwebview" path="dependencies/android" if="android" />
-	<android extension="fr.tbaudon.OpenFLWebView" />
+	<!--<dependency name="openflwebview" path="dependencies/android" if="android" />
+	<android extension="fr.tbaudon.OpenFLWebView" />-->
 	
 </project>
