@@ -13,36 +13,22 @@ import openfl.utils.JNI;
 
 class OpenFLWebView {
 	
+	/*
+	 * jni type cheat sheet :
+	 * parameter type beetween (), return type after ()
+	 * nonBasicObject : Lpath/to/class;
+	 * void : V
+	 * bool : Z
+	 */
 	
-	public static function sampleMethod (inputValue:Int):Int {
-		
-		#if (android && openfl)
-		
-		var resultJNI = openflwebview_sample_method_jni(inputValue);
-		var resultNative = openflwebview_sample_method(inputValue);
-		
-		if (resultJNI != resultNative) {
-			
-			throw "Fuzzy math!";
-			
-		}
-		
-		return resultNative;
-		
-		#else
-		
-		return openflwebview_sample_method(inputValue);
-		
+	public static function init(caller : Dynamic, popup:Bool = false) {
+		#if android
+		init_jni(caller, popup);
 		#end
-		
 	}
 	
-	
-	private static var openflwebview_sample_method = Lib.load ("openflwebview", "openflwebview_sample_method", 1);
-	
 	#if (android && openfl)
-	private static var openflwebview_sample_method_jni = JNI.createStaticMethod ("fr.tbaudon.OpenFLWebView", "sampleMethod", "(I)I");
+	private static var init_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "init", "(Lorg/haxe/lime/HaxeObject;Z)V");
 	#end
-	
 	
 }

@@ -1,15 +1,13 @@
 package fr.tbaudon;
 
+import org.haxe.extension.Extension;
+import org.haxe.lime.HaxeObject;
 
-import android.app.Activity;
-import android.content.res.AssetManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
-
-import org.haxe.extension.Extension;
+import android.util.Log;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 /* 
 	You can use the Android Extension class in order to hook
@@ -37,15 +35,28 @@ import org.haxe.extension.Extension;
 	function for performing a single task, like returning a value
 	back to Haxe from Java.
 */
-public class OpenFLWebView extends Extension {
+public class OpenFLWebView extends Extension {	
 	
+	public static WebView webView;
 	
-	public static int sampleMethod (int inputValue) {
+	public static void init(HaxeObject listenerClass, boolean withPopup)
+	{
+		webView = new WebView(mainContext);
+		webView.setWebViewClient(new WebViewClient(){
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				//NMEWebView.HaxeListenerClass.call1("onURLChanging", url);
+				view.loadUrl(url);
+				return true;
+			}
+		});
 		
-		return inputValue * 100;
-		
+		mainActivity.setContentView(webView);
 	}
 	
+	public static void trace(String s){
+		Log.w("trace",s);
+	}
 	
 	/**
 	 * Called when an activity you launched exits, giving you the requestCode 
@@ -63,7 +74,6 @@ public class OpenFLWebView extends Extension {
 	 * Called when the activity is starting.
 	 */
 	public void onCreate (Bundle savedInstanceState) {
-		
 		
 		
 	}
@@ -129,8 +139,6 @@ public class OpenFLWebView extends Extension {
 	 * another activity has been resumed and is covering this one. 
 	 */
 	public void onStop () {
-		
-		
 		
 	}
 	
