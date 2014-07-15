@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<ndll name="openflwebview" />
+	
+	<!-- Use the following for an Android Java extension, not needed otherwise -->
+	
+	<dependency name="openflwebview" path="dependencies/android" if="android" />
+	<android extension="fr.tbaudon.OpenFLWebView" />
+	
+</project>
