@@ -4,6 +4,7 @@ import org.haxe.lime.GameActivity;
 import org.haxe.lime.HaxeObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -43,6 +44,10 @@ public class OpenFLWebView {
 	
 	private static String urlToLoad;
 	
+	public static void trace(String s){
+		Log.i("trace",s);
+	}
+	
 	public static void init()
 	{
 		trace("init OpenFLWebView");
@@ -55,12 +60,7 @@ public class OpenFLWebView {
 		});
 	}
 	
-	public static void trace(String s){
-		Log.i("trace",s);
-	}
-	
 	public static void show(String url){
-		
 		urlToLoad = url;
 		
 		activity.runOnUiThread(new Runnable() {
@@ -70,6 +70,10 @@ public class OpenFLWebView {
 				GameActivity.pushView(webView);
 			}
 		});
+	}
+	
+	public static void change(String url){
+		webView.loadUrl(url);
 	}
 	
 }
