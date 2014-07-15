@@ -3,11 +3,17 @@ package fr.tbaudon;
 import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
 
+import android.app.AlertDialog;
+import android.app.ActionBar.LayoutParams;
+import android.app.AlertDialog.Builder;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /* 
 	You can use the Android Extension class in order to hook
@@ -39,23 +45,28 @@ public class OpenFLWebView extends Extension {
 	
 	public static WebView webView;
 	
+	public static OpenFLWebView instance;
+	
 	public static void init(HaxeObject listenerClass, boolean withPopup)
 	{
-		webView = new WebView(mainContext);
-		webView.setWebViewClient(new WebViewClient(){
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				//NMEWebView.HaxeListenerClass.call1("onURLChanging", url);
-				view.loadUrl(url);
-				return true;
-			}
-		});
-		
-		mainActivity.setContentView(webView);
+		instance.doStuff();
 	}
 	
 	public static void trace(String s){
-		Log.w("trace",s);
+		Log.i("trace",s);
+	}
+	
+	public void doStuff(){
+		LinearLayout linear = new LinearLayout(mainActivity);
+		linear.setOrientation(LinearLayout.VERTICAL);
+		TextView text = new TextView(mainActivity);
+		text.setText("Test de text java");
+		linear.addView(text);
+		try {
+			mainActivity.setContentView(linear);
+		}catch (Exception e){
+			trace(e.getMessage());
+		}
 	}
 	
 	/**
@@ -64,9 +75,8 @@ public class OpenFLWebView extends Extension {
 	 * from it.
 	 */
 	public boolean onActivityResult (int requestCode, int resultCode, Intent data) {
-		
+		trace("result");
 		return true;
-		
 	}
 	
 	
@@ -74,8 +84,8 @@ public class OpenFLWebView extends Extension {
 	 * Called when the activity is starting.
 	 */
 	public void onCreate (Bundle savedInstanceState) {
-		
-		
+		trace("create");
+		instance = this;
 	}
 	
 	
@@ -83,9 +93,7 @@ public class OpenFLWebView extends Extension {
 	 * Perform any final cleanup before an activity is destroyed.
 	 */
 	public void onDestroy () {
-		
-		
-		
+		trace("destroy");
 	}
 	
 	
@@ -94,9 +102,7 @@ public class OpenFLWebView extends Extension {
 	 * the background, but has not (yet) been killed.
 	 */
 	public void onPause () {
-		
-		
-		
+		trace("pause");
 	}
 	
 	
@@ -105,9 +111,7 @@ public class OpenFLWebView extends Extension {
 	 * re-displayed to the user (the user has navigated back to it).
 	 */
 	public void onRestart () {
-		
-		
-		
+		trace("restart");
 	}
 	
 	
@@ -116,9 +120,7 @@ public class OpenFLWebView extends Extension {
 	 * to start interacting with the user.
 	 */
 	public void onResume () {
-		
-		
-		
+		trace("resume");
 	}
 	
 	
@@ -128,9 +130,7 @@ public class OpenFLWebView extends Extension {
 	 * user.
 	 */
 	public void onStart () {
-		
-		
-		
+		trace("start");
 	}
 	
 	
@@ -139,7 +139,7 @@ public class OpenFLWebView extends Extension {
 	 * another activity has been resumed and is covering this one. 
 	 */
 	public void onStop () {
-		
+		trace("stop");
 	}
 	
 	
