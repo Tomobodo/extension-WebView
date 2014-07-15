@@ -1,17 +1,12 @@
 package fr.tbaudon;
 
-import org.haxe.lime.HaxeObject;
 import org.haxe.lime.GameActivity;
+import org.haxe.lime.HaxeObject;
 
-import android.app.AlertDialog;
-import android.app.ActionBar.LayoutParams;
-import android.app.AlertDialog.Builder;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Looper;
+import android.app.Activity;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,30 +38,38 @@ import android.widget.TextView;
 */
 public class OpenFLWebView {	
 	
-	public static WebView webView;
+	private static WebView webView;
+	private static Activity activity;
 	
-	public static void init(HaxeObject listenerClass, boolean withPopup)
+	private static String urlToLoad;
+	
+	public static void init()
 	{
-		try {
-			
-			GameActivity.getInstance().runOnUiThread(new Runnable() {
-				
-				@Override
-				public void run() {
-					GameActivity activity = GameActivity.getInstance();
-					WebView webview = new WebView(activity);
-					webview.loadUrl("http://www.baudon.me");
-					GameActivity.pushView(webview);
-				}
-			});
-		}catch (Exception e){
-			trace(e.getMessage());
-		}
-
+		trace("init OpenFLWebView");
+		activity = GameActivity.getInstance();
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				webView = new WebView(activity);
+			}
+		});
 	}
 	
 	public static void trace(String s){
 		Log.i("trace",s);
+	}
+	
+	public static void show(String url){
+		
+		urlToLoad = url;
+		
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				webView.loadUrl(urlToLoad);
+				GameActivity.pushView(webView);
+			}
+		});
 	}
 	
 }

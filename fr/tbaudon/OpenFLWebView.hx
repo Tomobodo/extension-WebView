@@ -21,14 +21,26 @@ class OpenFLWebView {
 	 * bool : Z
 	 */
 	
-	public static function init(caller : Dynamic, popup:Bool = false) {
+	private static var inited : Bool;
+	
+	public static function init() {
+		if (!inited) {
+			inited = true;
+			#if android
+			init_jni();
+			#end
+		}
+	}
+	
+	public static function show(url : String) {
 		#if android
-		init_jni(caller, popup);
+		show_jni(url);
 		#end
 	}
 	
 	#if (android && openfl)
-	private static var init_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "init", "(Lorg/haxe/lime/HaxeObject;Z)V");
+	private static var init_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "init", "()V");
+	private static var show_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "show", "(Ljava/lang/String;)V");
 	#end
 	
 }
