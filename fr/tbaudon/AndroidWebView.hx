@@ -32,6 +32,7 @@ class AndroidWebView extends Sprite{
 	
 	// Members
 	var mJNIInstance : Dynamic;
+	var mQueue : Array<{func : Dynamic, params : Array<Dynamic>}>;
 	
 	var mUrlToLoad : String;
 	
@@ -40,23 +41,34 @@ class AndroidWebView extends Sprite{
 	public function new(defaultUrl : String = "http://www.baudon.me", width : UInt = 400, height : UInt = 400) {
 		super();
 		
+		mQueue = new Array<{func : Dynamic, params : Array<Dynamic>}>();
+		
 		mWebViewReady = false;
 		mJNIInstance = create_jni(this, width, height);
-		mUrlToLoad = defaultUrl;
+		
+		loadUrl(defaultUrl);
 		
 		addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 	}
 	
 	public function loadUrl(url : String) {
-		mUrlToLoad = url;
-		if(mWebViewReady)
+		if (mWebViewReady) {
+			mUrlToLoad = url;
 			loadUrl_jni(mJNIInstance, url);
+		}
+		else
+			addToQueue(loadUrl_jni, [mJNIInstance, url]);
 	}
 	
 	private function onWebViewInited() {
+		trace("inited");
 		mWebViewReady = true;
-		loadUrl(mUrlToLoad);
+		while (mQueue.length > 0)
+		{
+			var call = mQueue.shift();
+			Reflect.callMethod(Type.getClass(this), call.func, call.params);
+		}
 	}
 	
 	private function onRemovedFromStage(e:Event):Void 
@@ -66,7 +78,25 @@ class AndroidWebView extends Sprite{
 	
 	private function onAddedToStage(e:Event):Void 
 	{
-		add_jni(mJNIInstance);
+		if (mWebViewReady)
+			add_jni(mJNIInstance);
+		else
+			addToQueue(add_jni, [mJNIInstance]);
+	}
+	
+	function addToQueue(object : Dynamic, array:Array<Dynamic>) 
+	{
+		// don't push the same method twice, change the params instead
+		var canPush : Bool = true;
+		for (obj in mQueue) {
+				if (obj.func == object){
+					canPush = false;
+					obj.params = array;
+					break;
+				}
+		}
+		if(canPush)
+			mQueue.push( { func:object, params:array } );
 	}
 	
 }
