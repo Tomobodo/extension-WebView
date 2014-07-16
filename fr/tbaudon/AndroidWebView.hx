@@ -27,6 +27,8 @@ class AndroidWebView extends Sprite{
 	// MEMBER METHOD
 	private static var add_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "onAdded", "()V");
 	private static var loadUrl_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "loadUrl", "(Ljava/lang/String;)V");
+	private static var setPos_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setPosition", "(II)V");
+	private static var setDim_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setDim", "(II)V");
 	
 	/*************************************************************/
 	
@@ -38,8 +40,14 @@ class AndroidWebView extends Sprite{
 	
 	var mWebViewReady : Bool;
 	
+	var mWidth : UInt;
+	var mHeight : UInt;
+	
 	public function new(defaultUrl : String = "http://www.baudon.me", width : UInt = 400, height : UInt = 400) {
 		super();
+		
+		mWidth = width;
+		mHeight = height;
 		
 		mQueue = new Array<{func : Dynamic, params : Array<Dynamic>}>();
 		
@@ -82,6 +90,23 @@ class AndroidWebView extends Sprite{
 			add_jni(mJNIInstance);
 		else
 			addToQueue(add_jni, [mJNIInstance]);
+	}
+	
+	private function setPos(x : Int, y : Int) {
+		if (mWebViewReady)
+			setPos_jni(mJNIInstance, x, y);
+		else
+			addToQueue(setPos_jni, [mJNIInstance, x, y]);
+	}
+	
+	override public function set_x(x : Float) : Float {
+		setPos(cast x,cast y);
+		return super.set_x(x);
+	}
+	
+	override public function set_y(y : Float) : Float {
+		setPos(cast x,cast y);
+		return super.set_y(y);
 	}
 	
 	function addToQueue(object : Dynamic, array:Array<Dynamic>) 

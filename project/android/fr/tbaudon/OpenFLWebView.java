@@ -3,7 +3,8 @@ package fr.tbaudon;
 import org.haxe.lime.GameActivity;
 import org.haxe.lime.HaxeObject;
 
-import android.app.ActionBar.LayoutParams;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.LinearLayout;
 import android.app.Activity;
 import android.util.Log;
 import android.webkit.WebView;
@@ -23,6 +24,7 @@ public class OpenFLWebView implements Runnable{
 	private WebView mWebView;
 	private Activity mActivity;
 	private HaxeObject mObject;
+	private LayoutParams mLayoutParams;
 	
 	public static OpenFLWebView create(HaxeObject object, int width, int height){
 		return new OpenFLWebView(object, width, height);
@@ -74,6 +76,9 @@ public class OpenFLWebView implements Runnable{
 			case ADD :
 				add();
 				break;
+			case UPDATE :
+				update();
+				break;
 			default :
 				break;
 		}
@@ -86,20 +91,32 @@ public class OpenFLWebView implements Runnable{
 	
 	private void initWebView(){
 		mWebView = new WebView(mActivity);
+		mLayoutParams = new LayoutParams(mWidth,mHeight);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 		mWebView.setBackgroundColor(0x00000000);
-		mObject.call0("onWebViewInited");		
+		mObject.call0("onWebViewInited");
+		
 		if(mVerbose)
 			Log.i("trace","WebView : Created new webview.");
 	}
 	
 	private void add(){
-		mActivity.addContentView(mWebView, new LayoutParams(mWidth,mHeight));
 		mWebView.setX(mX);
 		mWebView.setY(mY);
+		mActivity.addContentView(mWebView, mLayoutParams);
+		
 		if(mVerbose)
 			Log.i("trace","WebView : Added webview.");
+	}
+	
+	private void update() {
+		mWebView.setX(mX);
+		mWebView.setY(mY);
+		if(mLayoutParams.width < mWidth + mX)
+			mLayoutParams.width = mWidth + mX;
+		if(mLayoutParams.height < mHeight + mY)
+			mLayoutParams.height = mHeight + mY;
 	}
 	
 }
