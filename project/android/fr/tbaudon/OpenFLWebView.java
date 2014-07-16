@@ -5,88 +5,101 @@ import org.haxe.lime.HaxeObject;
 
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
-import android.content.Intent;
-import android.inputmethodservice.Keyboard.Key;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-/* 
-	You can use the Android Extension class in order to hook
-	into the Android activity lifecycle. This is not required
-	for standard Java code, this is designed for when you need
-	deeper integration.
+public class OpenFLWebView implements Runnable{	
 	
-	You can access additional references from the Extension class,
-	depending on your needs:
+	private int mWidth;
+	private int mHeight;
 	
-	- Extension.assetManager (android.content.res.AssetManager)
-	- Extension.callbackHandler (android.os.Handler)
-	- Extension.mainActivity (android.app.Activity)
-	- Extension.mainContext (android.content.Context)
-	- Extension.mainView (android.view.View)
+	private int mX;
+	private int mY;
 	
-	You can also make references to static or instance methods
-	and properties on Java classes. These classes can be included 
-	as single files using <java path="to/File.java" /> within your
-	project, or use the full Android Library Project format (such
-	as this example) in order to include your own AndroidManifest
-	data, additional dependencies, etc.
+	private boolean mVerbose;
+
+	private State mState;
+
+	private WebView mWebView;
+	private Activity mActivity;
+	private HaxeObject mObject;
 	
-	These are also optional, though this example shows a static
-	function for performing a single task, like returning a value
-	back to Haxe from Java.
-*/
-public class OpenFLWebView {	
-	
-	private static WebView webView;
-	private static Activity activity;
-	
-	private static String urlToLoad;
-	
-	private static boolean showing;
-	
-	public static void trace(String s){
-		Log.i("trace",s);
+	public static OpenFLWebView create(HaxeObject object, int width, int height){
+		return new OpenFLWebView(object, width, height);
 	}
 	
-	public static void init()
-	{
-		trace("init OpenFLWebView");
-		activity = GameActivity.getInstance();
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				webView = new WebView(activity);
-				webView.getSettings().setJavaScriptEnabled(true);
-				webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-				webView.setBackgroundColor(0x00000000);
-			}
-		});
-	}
-	
-	public static void show(String url){
-		urlToLoad = url;
+	public OpenFLWebView(HaxeObject object, int width, int height){
+		setDim(width, height);
+		setPosition(0, 0);
+		setVerbose(false);
 		
-		if(!showing){
-			activity.runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					webView.loadUrl(urlToLoad);
-					activity.addContentView(webView, new LayoutParams(600,400));
-					webView.setX(100);
-					webView.setY(100);
-				}
-			});
+		mObject = object;
+		
+		mActivity = GameActivity.getInstance();
+		runState(State.INIT);
+	}
+	
+	public void setVerbose(boolean verbose){
+		mVerbose = verbose;
+	}
+	
+	public void setPosition(int x, int y){
+		mX = x;
+		mY = y;
+		
+		if(mWebView != null) runState(State.UPDATE);
+	}
+	
+	public void setDim(int w, int h){
+		mWidth = w;
+		mHeight = h;
+		
+		if(mWebView != null) runState(State.UPDATE);
+	}
+	
+	public void loadUrl(String url){
+		mWebView.loadUrl(url);
+	}
+	
+	public void onAdded() {
+		runState(State.ADD);
+	}
+
+	@Override
+	public void run() {
+		switch (mState){
+			case INIT :
+				initWebView();
+				break;
+			case ADD :
+				add();
+				break;
+			default :
+				break;
 		}
-		
-		showing = true;
 	}
 	
-	public static void change(String url){
-		webView.loadUrl(url);
+	private void runState(State state){
+		mState = state;
+		mActivity.runOnUiThread(this);
+	}
+	
+	private void initWebView(){
+		mWebView = new WebView(mActivity);
+		mWebView.getSettings().setJavaScriptEnabled(true);
+		mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+		mWebView.setBackgroundColor(0x00000000);
+		mObject.call0("onWebViewInited");		
+		if(mVerbose)
+			Log.i("trace","WebView : Created new webview.");
+	}
+	
+	private void add(){
+		mActivity.addContentView(mWebView, new LayoutParams(mWidth,mHeight));
+		mWebView.setX(mX);
+		mWebView.setY(mY);
+		if(mVerbose)
+			Log.i("trace","WebView : Added webview.");
 	}
 	
 }
