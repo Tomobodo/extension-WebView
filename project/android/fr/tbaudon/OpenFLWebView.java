@@ -3,8 +3,10 @@ package fr.tbaudon;
 import org.haxe.lime.GameActivity;
 import org.haxe.lime.HaxeObject;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
+import android.inputmethodservice.Keyboard.Key;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -44,6 +46,8 @@ public class OpenFLWebView {
 	
 	private static String urlToLoad;
 	
+	private static boolean showing;
+	
 	public static void trace(String s){
 		Log.i("trace",s);
 	}
@@ -56,6 +60,9 @@ public class OpenFLWebView {
 			@Override
 			public void run() {
 				webView = new WebView(activity);
+				webView.getSettings().setJavaScriptEnabled(true);
+				webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+				webView.setBackgroundColor(0x00000000);
 			}
 		});
 	}
@@ -63,13 +70,19 @@ public class OpenFLWebView {
 	public static void show(String url){
 		urlToLoad = url;
 		
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				webView.loadUrl(urlToLoad);
-				GameActivity.pushView(webView);
-			}
-		});
+		if(!showing){
+			activity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					webView.loadUrl(urlToLoad);
+					activity.addContentView(webView, new LayoutParams(600,400));
+					webView.setX(100);
+					webView.setY(100);
+				}
+			});
+		}
+		
+		showing = true;
 	}
 	
 	public static void change(String url){

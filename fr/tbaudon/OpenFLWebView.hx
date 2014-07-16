@@ -1,6 +1,7 @@
 package fr.tbaudon ;
 import flash.display.Stage;
 import flash.events.Event;
+import openfl.events.FocusEvent;
 import openfl.events.KeyboardEvent;
 
 #if cpp
@@ -44,15 +45,7 @@ class OpenFLWebView {
 			#if android
 			show_jni(url);
 			#end
-			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		}
-	}
-	
-	static private function onKeyUp(e:Event):Void 
-	{
-		e.stopPropagation();
-		e.stopImmediatePropagation();
-		trace("ferme pas");
 	}
 	
 	#if (android && openfl)
