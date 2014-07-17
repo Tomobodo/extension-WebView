@@ -13,6 +13,9 @@ Then :
   mWebView.x = 200;
   mWebView.y = 100;
   addChild(mWebView);
+  mWebView.addEventlistener(ProgressEvent.PROGRESS, onProgress);
+  mWebView.addEventlistener(Event.COMPLETE, onLoadComplete);
+  mWebView.addEventlistener(ErrorEvent.ERROR, onLoadError);
   //later
   mWebView.loadUrl("newUrl");
   //remove
