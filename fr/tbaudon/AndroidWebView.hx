@@ -3,8 +3,10 @@ package fr.tbaudon ;
 import flash.display.Stage;
 import flash.events.Event;
 import openfl.display.Sprite;
+import openfl.events.ErrorEvent;
 import openfl.events.FocusEvent;
 import openfl.events.KeyboardEvent;
+import openfl.events.ProgressEvent;
 import openfl.Lib;
 import openfl.system.Capabilities;
 import openfl.system.System;
@@ -99,6 +101,21 @@ class AndroidWebView extends Sprite{
 		{
 			var call = mQueue.shift();
 			Reflect.callMethod(Type.getClass(this), call.func, call.params);
+		}
+	}
+	
+	private function onJNIEvent(event : String, param : Dynamic ) {
+		switch(event) {
+			case 'progress' :
+				var progress : Int = param;
+				dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, progress, 100));
+				if (progress == 100)
+					dispatchEvent(new Event(Event.COMPLETE)); 
+			case 'error' :
+				var description : String = param;
+				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, description));
+			default :
+				trace(event);
 		}
 	}
 	

@@ -7,7 +7,9 @@ import android.app.Activity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
@@ -123,6 +125,31 @@ public class OpenFLWebView implements Runnable{
 		mLayoutParams = new LayoutParams(mWidth,mHeight);
 		mLayout = new RelativeLayout(mActivity);
 		mLayout.addView(mWebView, mLayoutParams);
+		
+		// webChromeClient
+		mWebView.setWebChromeClient(new WebChromeClient() {
+			@Override
+			public void onProgressChanged(WebView view, int progress) {
+				mObject.call2("onJNIEvent", "progress", progress);
+			}
+		});
+		
+		// webClient
+		mWebView.setWebViewClient(new WebViewClient() {
+             @Override
+             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
+             {
+            	 mObject.call2("onJNIEvent", "error", description);
+             }
+
+             @Override
+             public boolean shouldOverrideUrlLoading(WebView view, String url)
+             {
+                 view.loadUrl(url);
+                 return true;
+             }
+         });
+		
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 		mWebView.setBackgroundColor(0x00000000);
