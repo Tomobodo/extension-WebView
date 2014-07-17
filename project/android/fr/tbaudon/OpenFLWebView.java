@@ -5,10 +5,9 @@ import org.haxe.lime.HaxeObject;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 
 public class OpenFLWebView implements Runnable{	
 	
@@ -23,7 +22,7 @@ public class OpenFLWebView implements Runnable{
 	private State mState;
 
 	private WebView mWebView;
-	private LinearLayout mLayout;
+	private RelativeLayout mLayout;
 	private Activity mActivity;
 	private HaxeObject mObject;
 	private LayoutParams mLayoutParams;
@@ -74,6 +73,10 @@ public class OpenFLWebView implements Runnable{
 	public void onAdded() {
 		runState(State.ADD);
 	}
+	
+	public void onOrientationChange(){
+		runState(State.UPDATE);
+	}
 
 	@Override
 	public void run() {
@@ -100,7 +103,7 @@ public class OpenFLWebView implements Runnable{
 	private void initWebView(){
 		mWebView = new WebView(mActivity);
 		mLayoutParams = new LayoutParams(mWidth,mHeight);
-		mLayout = new LinearLayout(mActivity);
+		mLayout = new RelativeLayout(mActivity);
 		mLayout.addView(mWebView, mLayoutParams);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
@@ -112,7 +115,7 @@ public class OpenFLWebView implements Runnable{
 	}
 	
 	private void add(){
-		mActivity.addContentView(mLayout, new LayoutParams(1000, 1000));
+		mActivity.addContentView(mLayout, new LayoutParams(10000,10000));
 		if(mVerbose)
 			Log.i("trace","WebView : Added webview.");
 	}

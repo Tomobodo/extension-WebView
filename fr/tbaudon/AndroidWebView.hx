@@ -176,12 +176,10 @@ class AndroidWebView extends Sprite{
 	{
 		var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
 		
-		var orientation = Stage.getOrientation();
-		
 		var displayWidth : Float;
 		var displayHeight : Float;
 		
-		if (orientation == Stage.OrientationLandscapeLeft || orientation == Stage.OrientationLandscapeRight) {
+		if (Lib.current.stage.stageWidth>=Lib.current.stage.stageHeight) {
 			displayHeight = Capabilities.screenResolutionY;
 			displayWidth = displayHeight * ratio;
 			mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
@@ -197,6 +195,13 @@ class AndroidWebView extends Sprite{
 		
 		mScaleX = displayWidth / Lib.current.stage.stageWidth;
 		mScaleY = displayHeight / Lib.current.stage.stageHeight;
+		
+		if (e != null)
+		{
+			setDim(cast width, cast height);
+			x = x;
+			y = y;
+		}
 	}
 	
 }
