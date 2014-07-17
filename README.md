@@ -15,6 +15,8 @@ Then :
   addChild(mWebView);
   //later----
   mWebView.loadUrl("newUrl");
+  //remove
+  removeChild(mWebView);
   ```
 Please note that event if it looks like it's a displayObject, it won't respect the display hierarchy as it's basicaly a WebView on top of the game mainView. So it will always appear on top of your game, what ever you do.
   

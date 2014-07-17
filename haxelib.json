@@ -1,10 +1,10 @@
 {
   "name": "OpenFLWebView",
-  "url": "",
+  "url": "https://github.com/TBaudon/OpenFLWebView",
   "license": "MIT",
-  "tags": [],
-  "description": "",
-  "version": "1.0.0",
+  "tags": ["webView"],
+  "description": "Use a webView in your openfl application.",
+  "version": "0.1.0",
   "releasenote": "",
   "contributors": ["Thomas Baudon"],
   "dependencies": {
