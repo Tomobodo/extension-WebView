@@ -7,6 +7,7 @@ import openfl.events.FocusEvent;
 import openfl.events.KeyboardEvent;
 import openfl.Lib;
 import openfl.system.Capabilities;
+import openfl.system.System;
 
 import openfl.utils.JNI;
 
@@ -33,6 +34,7 @@ class AndroidWebView extends Sprite{
 	private static var setPos_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setPosition", "(II)V");
 	private static var setDim_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setDim", "(II)V");
 	private static var setVerbose_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setVerbose", "(Z)V");
+	private static var dispose_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "dispose", "()V");
 	
 	/*************************************************************/
 	
@@ -44,9 +46,6 @@ class AndroidWebView extends Sprite{
 	
 	var mWebViewReady : Bool;
 	
-	//var mWidth : UInt;
-	//var mHeight : UInt;
-	
 	/**
 	 * If a fixed window size is set, openfl will scale the game to fit the screen so the coordinate passed
 	 * to android webView won't be corresponding. We need to multiply every coordinate passed by this ratio.
@@ -55,10 +54,10 @@ class AndroidWebView extends Sprite{
 	var mScaleY : Float;
 	var mOffsetX : Float;
 	var mOffsetY : Float;
-	var mWidth : Int;
-	var mHeight : Int;
+	var mWidth : Float;
+	var mHeight : Float;
 	
-	public function new(defaultUrl : String = "http://www.baudon.me", w : UInt = 400, h : UInt = 400) {
+	public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400) {
 		super();
 		
 		computeScale();
@@ -75,7 +74,6 @@ class AndroidWebView extends Sprite{
 		
 		addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-		
 		Lib.current.stage.addEventListener(Event.RESIZE, computeScale);
 		
 		x = 0;
@@ -120,36 +118,54 @@ class AndroidWebView extends Sprite{
 			addToQueue(add_jni, [mJNIInstance]);
 	}
 	
-	private function setPos(x : Int, y : Int) {
-		x *= cast mScaleX;
-		y *= cast mScaleY;
-		x += cast mOffsetX;
-		y += cast mOffsetY;
+	private function setPos(x : Float, y : Float) {
+		x *= mScaleX;
+		y *= mScaleY;
+		x += mOffsetX;
+		y += mOffsetY;
 		
 		if (mWebViewReady)
-			setPos_jni(mJNIInstance, x, y);
+			setPos_jni(mJNIInstance, Std.int(x), Std.int(y));
 		else
-			addToQueue(setPos_jni, [mJNIInstance, x, y]);
+			addToQueue(setPos_jni, [mJNIInstance, Std.int(x), Std.int(y)]);
 	}
 	
-	public function setDim(w : Int, h : Int) {
-		w *= cast mScaleX;
-		h *= cast mScaleY;
+	public function setDim(w : Float, h : Float) {
+		w *= mScaleX;
+		h *= mScaleY;
 		mWidth = w;
 		mHeight = h;
 		if (mWebViewReady)
-			setDim_jni(mJNIInstance, w, h);
+			setDim_jni(mJNIInstance, Std.int(w), Std.int(h));
 		else
-			addToQueue(setDim_jni, [mJNIInstance, w, h]);
+			addToQueue(setDim_jni, [mJNIInstance, Std.int(w), Std.int(h)]);
+	}
+	
+	public function dispose() {
+		if(mJNIInstance != null){
+			if (parent != null)
+				parent.removeChild(this);
+				
+			dispose_jni(mJNIInstance);
+				
+			mJNIInstance = null;
+			mQueue = null;
+			
+			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+			Lib.current.stage.removeEventListener(Event.RESIZE, computeScale);
+			
+			System.gc();
+		}
 	}
 	
 	override public function set_x(x : Float) : Float {
-		setPos(cast x,cast y);
+		setPos(x,y);
 		return super.set_x(x);
 	}
 	
 	override public function set_y(y : Float) : Float {
-		setPos(cast x,cast y);
+		setPos(x,y);
 		return super.set_y(y);
 	}
 	

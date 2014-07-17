@@ -13,14 +13,18 @@ Then :
   mWebView.x = 200;
   mWebView.y = 100;
   addChild(mWebView);
-  //later----
+  //later
   mWebView.loadUrl("newUrl");
   //remove
   removeChild(mWebView);
   ```
-Please note that event if it looks like it's a displayObject, it won't respect the display hierarchy as it's basicaly a WebView on top of the game mainView. So it will always appear on top of your game, what ever you do.
+Please note that event if it looks like it's a displayObject, it won't respect the display hierarchy as it's basicaly a WebView on top of the game mainView. 
+So it will always appear on top of your game, whatever you do.
+
   
 ##RoadMap
-* Move the webview
-* Remove the webView
+* Move the webview // done 
+* Remove the webView // done
+* Destroy the webView // done
+* Event for error, page not found, page loaded ect.
 * iOS

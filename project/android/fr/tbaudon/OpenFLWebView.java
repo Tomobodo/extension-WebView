@@ -83,6 +83,15 @@ public class OpenFLWebView implements Runnable{
 	public void onOrientationChange(){
 		runState(State.UPDATE);
 	}
+	
+	public void dispose(){
+		mObject = null;
+		mWebView.destroy();
+		mWebView = null;
+		mLayout = null;
+		
+		System.gc();
+	}
 
 	@Override
 	public void run() {
