@@ -4,7 +4,9 @@ import org.haxe.lime.GameActivity;
 import org.haxe.lime.HaxeObject;
 
 import android.app.Activity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.webkit.WebView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -115,7 +117,9 @@ public class OpenFLWebView implements Runnable{
 	}
 	
 	private void add(){
-		mActivity.addContentView(mLayout, new LayoutParams(10000,10000));
+		DisplayMetrics metrics = new DisplayMetrics();
+		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		mActivity.addContentView(mLayout, new LayoutParams(metrics.widthPixels, metrics.widthPixels));
 		if(mVerbose)
 			Log.i("trace","WebView : Added webview.");
 	}

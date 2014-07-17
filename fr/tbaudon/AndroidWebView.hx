@@ -179,7 +179,7 @@ class AndroidWebView extends Sprite{
 		var displayWidth : Float;
 		var displayHeight : Float;
 		
-		if (Lib.current.stage.stageWidth>=Lib.current.stage.stageHeight) {
+		if (Capabilities.screenResolutionX>=Capabilities.screenResolutionY) {
 			displayHeight = Capabilities.screenResolutionY;
 			displayWidth = displayHeight * ratio;
 			mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
