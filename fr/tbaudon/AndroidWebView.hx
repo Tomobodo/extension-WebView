@@ -28,6 +28,7 @@ class AndroidWebView extends Sprite{
 	
 	// MEMBER METHOD
 	private static var add_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "onAdded", "()V");
+	private static var remove_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "onRemoved", "()V");
 	private static var loadUrl_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "loadUrl", "(Ljava/lang/String;)V");
 	private static var setPos_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setPosition", "(II)V");
 	private static var setDim_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setDim", "(II)V");
@@ -105,7 +106,10 @@ class AndroidWebView extends Sprite{
 	
 	private function onRemovedFromStage(e:Event):Void 
 	{
-		
+		if (mWebViewReady)
+			remove_jni(mJNIInstance);
+		else
+			addToQueue(remove_jni, [mJNIInstance]);
 	}
 	
 	private function onAddedToStage(e:Event):Void 

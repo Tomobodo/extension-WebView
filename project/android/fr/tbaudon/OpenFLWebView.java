@@ -6,7 +6,7 @@ import org.haxe.lime.HaxeObject;
 import android.app.Activity;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -76,6 +76,10 @@ public class OpenFLWebView implements Runnable{
 		runState(State.ADD);
 	}
 	
+	public void onRemoved() {
+		runState(State.REMOVE);
+	}
+	
 	public void onOrientationChange(){
 		runState(State.UPDATE);
 	}
@@ -88,6 +92,9 @@ public class OpenFLWebView implements Runnable{
 				break;
 			case ADD :
 				add();
+				break;
+			case REMOVE :
+				remove();
 				break;
 			case UPDATE :
 				update();
@@ -122,6 +129,13 @@ public class OpenFLWebView implements Runnable{
 		mActivity.addContentView(mLayout, new LayoutParams(metrics.widthPixels, metrics.widthPixels));
 		if(mVerbose)
 			Log.i("trace","WebView : Added webview.");
+	}
+	
+	private void remove(){
+		if(mVerbose)
+			Log.i("trace","WebView : Removed webview.");
+		ViewGroup vg = (ViewGroup)(mLayout.getParent());
+		vg.removeView(mLayout);
 	}
 	
 	private void update() {
