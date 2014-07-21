@@ -32,6 +32,11 @@ extern "C" void openflwebview_main () {
 }
 DEFINE_ENTRY_POINT (openflwebview_main);
 
+static value openflwebview_test(){
+    openflwebview::test();
+}
+DEFINE_PRIM(openflwebview_test, 0)
+
 
 
 extern "C" int openflwebview_register_prims () { return 0; }

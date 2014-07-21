@@ -6,7 +6,7 @@ namespace openflwebview {
 	
 	
 	int SampleMethod(int inputValue);
-	
+	void test();
 	
 }
 
