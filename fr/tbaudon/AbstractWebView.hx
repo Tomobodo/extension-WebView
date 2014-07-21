@@ -109,6 +109,38 @@ class AbstractWebView extends Sprite {
     }
 
     /**
+     * Set the x position
+     * @param x : Float
+     */
+    override function set_x(x : Float) : Float {
+        setPos(x * mScaleX + mOffsetX, y * mScaleY + mOffsetY);
+        return super.set_x(x);
+    }
+
+    /**
+     * Set the y position
+     * @param y : Float
+     */
+    override function set_y(y : Float) : Float {
+        setPos(x * mScaleX + mOffsetX, y * mScaleY + mOffsetY);
+        return super.set_y(y);
+    }
+
+    /**
+     * @return width : Float
+     */
+    override function get_width() : Float {
+        return mWidth / mScaleX;
+    }
+
+    /**
+     * @return height : Float
+     */
+    override function get_height() : Float {
+        return mHeight / mScaleY;
+    }
+
+    /**
     *   Set the webview to verbose mode so that you can check what's happening
     **/
     public function setVerbose(verbose : Bool){
@@ -141,38 +173,6 @@ class AbstractWebView extends Sprite {
      */
     public function dispose(){
         throw 'dispose is not overridden.';
-    }
-
-    /**
-     * Set the x position
-     * @param x : Float
-     */
-    override public function set_x(x : Float) : Float {
-        setPos(x * mScaleX + mOffsetX, y * mScaleY + mOffsetY);
-        return super.set_x(x);
-    }
-
-    /**
-     * Set the y position
-     * @param y : Float
-     */
-    override public function set_y(y : Float) : Float {
-        setPos(x * mScaleX + mOffsetX, y * mScaleY + mOffsetY);
-        return super.set_y(y);
-    }
-
-    /**
-     * @return width : Float
-     */
-    override public function get_width() : Float {
-        return mWidth / mScaleX;
-    }
-
-    /**
-     * @return height : Float
-     */
-    override public function get_height() : Float {
-        return mHeight / mScaleY;
     }
 
 }
