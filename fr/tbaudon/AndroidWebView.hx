@@ -13,7 +13,7 @@ import openfl.system.System;
 
 import openfl.utils.JNI;
 
-class AndroidWebView extends Sprite{
+class AndroidWebView extends AbstractWebView{
 	
 	/**************************************************************/
 	// JNI LINKING
@@ -42,60 +42,31 @@ class AndroidWebView extends Sprite{
 	
 	// Members
 	var mJNIInstance : Dynamic;
+
+    /** Queue WebView call untill the webView isn't ready **/
 	var mQueue : Array<{func : Dynamic, params : Array<Dynamic>}>;
-	
-	var mUrlToLoad : String;
-	
 	var mWebViewReady : Bool;
 	
-	/**
-	 * If a fixed window size is set, openfl will scale the game to fit the screen so the coordinate passed
-	 * to android webView won't be corresponding. We need to multiply every coordinate passed by this ratio.
-	 */
-	var mScaleX : Float;
-	var mScaleY : Float;
-	var mOffsetX : Float;
-	var mOffsetY : Float;
-	var mWidth : Float;
-	var mHeight : Float;
-	
 	public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400) {
-		super();
-		
-		computeScale();
-		
-		mWidth = cast w * mScaleX;
-		mHeight = cast h * mScaleY;
-		
-		mQueue = new Array<{func : Dynamic, params : Array<Dynamic>}>();
-		
-		mWebViewReady = false;
-		mJNIInstance = create_jni(this, mWidth, mHeight);
-		
-		loadUrl(defaultUrl);
-		
-		addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-		addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-		Lib.current.stage.addEventListener(Event.RESIZE, computeScale);
-		
-		x = 0;
-		y = 0;
+        mJNIInstance = create_jni(this, mWidth, mHeight);
+        mQueue = new Array<{func : Dynamic, params : Array<Dynamic>}>();
+        mWebViewReady = false;
+
+        super(defaultUrl, w, h);
 	}
 	
-	public function setVerbose(verbose : Bool) {
+	override public function setVerbose(verbose : Bool) {
 		setVerbose_jni(mJNIInstance, verbose);
 	}
-	
-	public function loadUrl(url : String) {
-		if (mWebViewReady) {
-			mUrlToLoad = url;
+
+    override public function loadUrl(url : String) {
+		if (mWebViewReady)
 			loadUrl_jni(mJNIInstance, url);
-		}
 		else
 			addToQueue(loadUrl_jni, [mJNIInstance, url]);
 	}
 	
-	private function onWebViewInited() {
+	function onWebViewInited() {
 		mWebViewReady = true;
 		while (mQueue.length > 0)
 		{
@@ -104,7 +75,7 @@ class AndroidWebView extends Sprite{
 		}
 	}
 	
-	private function onJNIEvent(event : String, param : Dynamic ) {
+	function onJNIEvent(event : String, param : Dynamic ) {
 		switch(event) {
 			case 'progress' :
 				var progress : Int = param;
@@ -118,24 +89,24 @@ class AndroidWebView extends Sprite{
 				trace(event);
 		}
 	}
-	
-	private function onRemovedFromStage(e:Event):Void 
+
+    override function onRemovedFromStage(e:Event):Void
 	{
 		if (mWebViewReady)
 			remove_jni(mJNIInstance);
 		else
 			addToQueue(remove_jni, [mJNIInstance]);
 	}
-	
-	private function onAddedToStage(e:Event):Void 
+
+    override function onAddedToStage(e:Event):Void
 	{
 		if (mWebViewReady)
 			add_jni(mJNIInstance);
 		else
 			addToQueue(add_jni, [mJNIInstance]);
 	}
-	
-	private function setPos(x : Float, y : Float) {
+
+    override function setPos(x : Float, y : Float) {
 		x *= mScaleX;
 		y *= mScaleY;
 		x += mOffsetX;
@@ -147,18 +118,14 @@ class AndroidWebView extends Sprite{
 			addToQueue(setPos_jni, [mJNIInstance, Std.int(x), Std.int(y)]);
 	}
 	
-	public function setDim(w : Float, h : Float) {
-		w *= mScaleX;
-		h *= mScaleY;
-		mWidth = w;
-		mHeight = h;
+	override function applyDim(w : Float, h : Float) {
 		if (mWebViewReady)
 			setDim_jni(mJNIInstance, Std.int(w), Std.int(h));
 		else
 			addToQueue(setDim_jni, [mJNIInstance, Std.int(w), Std.int(h)]);
 	}
 	
-	public function dispose() {
+	override public function dispose() {
 		if(mJNIInstance != null){
 			if (parent != null)
 				parent.removeChild(this);
@@ -176,24 +143,6 @@ class AndroidWebView extends Sprite{
 		}
 	}
 	
-	override public function set_x(x : Float) : Float {
-		setPos(x,y);
-		return super.set_x(x);
-	}
-	
-	override public function set_y(y : Float) : Float {
-		setPos(x,y);
-		return super.set_y(y);
-	}
-	
-	override public function get_width() : Float {
-		return mWidth / mScaleX;
-	}
-	
-	override public function get_height() : Float {
-		return mHeight / mScaleY;
-	}
-	
 	function addToQueue(object : Dynamic, array:Array<Dynamic>) 
 	{
 		// don't push the same method twice, change the params instead
@@ -207,36 +156,6 @@ class AndroidWebView extends Sprite{
 		}
 		if(canPush)
 			mQueue.push( { func:object, params:array } );
-	}
-	
-	function computeScale(e : Event = null)
-	{
-		var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
-		
-		var displayWidth : Float;
-		var displayHeight : Float;
-		
-		if (Capabilities.screenResolutionX>=Capabilities.screenResolutionY) {
-			displayHeight = Capabilities.screenResolutionY;
-			displayWidth = displayHeight * ratio;
-			mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
-			mOffsetY = 0; 
-		}else {
-			displayWidth = Capabilities.screenResolutionX;
-			displayHeight = displayWidth / ratio;
-			mOffsetX = 0;
-			mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
-		}
-		
-		mScaleX = displayWidth / Lib.current.stage.stageWidth;
-		mScaleY = displayHeight / Lib.current.stage.stageHeight;
-		
-		if (e != null)
-		{
-			setDim(cast width, cast height);
-			x = x;
-			y = y;
-		}
 	}
 	
 }
