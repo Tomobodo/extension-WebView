@@ -87,12 +87,7 @@ public class OpenFLWebView implements Runnable{
 	}
 	
 	public void dispose(){
-		mObject = null;
-		mWebView.destroy();
-		mWebView = null;
-		mLayout = null;
-		
-		System.gc();
+		runState(State.DESTROY);
 	}
 
 	@Override
@@ -109,6 +104,9 @@ public class OpenFLWebView implements Runnable{
 				break;
 			case UPDATE :
 				update();
+				break;
+			case DESTROY : 
+				destroy();
 				break;
 			default :
 				break;
@@ -180,7 +178,21 @@ public class OpenFLWebView implements Runnable{
 		mLayoutParams.height = mHeight;
 		mLayout.requestLayout();
 		if(mVerbose)
-			Log.i("trace","WebView : Update webview transformation.");
+			Log.i("trace","WebView : Update webview transformation : ("+mX+", "+mY+", "+mWidth+", "+mHeight+")");
+	}
+	
+	private void destroy() {
+		remove();
+		
+		mObject = null;
+		mWebView.destroy();
+		mWebView = null;
+		mLayout = null;
+		
+		System.gc();
+		
+		if(mVerbose)
+			Log.i("trace","WebView : Dispose.");
 	}
 	
 }

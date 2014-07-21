@@ -106,12 +106,7 @@ class AndroidWebView extends AbstractWebView{
 			addToQueue(add_jni, [mJNIInstance]);
 	}
 
-    override function setPos(x : Float, y : Float) {
-		x *= mScaleX;
-		y *= mScaleY;
-		x += mOffsetX;
-		y += mOffsetY;
-		
+    override function setPos(x : Float, y : Float) {	
 		if (mWebViewReady)
 			setPos_jni(mJNIInstance, Std.int(x), Std.int(y));
 		else
@@ -127,8 +122,6 @@ class AndroidWebView extends AbstractWebView{
 	
 	override public function dispose() {
 		if(mJNIInstance != null){
-			if (parent != null)
-				parent.removeChild(this);
 				
 			dispose_jni(mJNIInstance);
 				

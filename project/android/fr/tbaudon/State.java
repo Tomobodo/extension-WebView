@@ -4,5 +4,6 @@ public enum State {
 	INIT,
 	ADD,
 	REMOVE,
-	UPDATE
+	UPDATE,
+	DESTROY
 }

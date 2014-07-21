@@ -1,9 +1,9 @@
 package fr.tbaudon ;
 
-import openfl.system.Capabilities;
 import openfl.events.Event;
 import openfl.Lib;
 import openfl.display.Sprite;
+import openfl.system.Capabilities;
 
 class AbstractWebView extends Sprite {
 
@@ -31,17 +31,14 @@ class AbstractWebView extends Sprite {
 
         computeScale();
 
-        mWidth = w * mScaleX;
-        mHeight = h * scaleY;
-
-        loadUrl(defaultUrl);
-
         addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
         Lib.current.stage.addEventListener(Event.RESIZE, computeScale);
 
         x = 0;
         y = 0;
+		setDim(w, h);
+		loadUrl(defaultUrl);
     }
 
     /**
@@ -49,14 +46,14 @@ class AbstractWebView extends Sprite {
     *   of the view width and height when openfl strech
     *   the game to fit the screen
     **/
-    function computeScale(e : Eventnt = null)
+    function computeScale(e : Event = null)
     {
         var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
 
         var displayWidth : Float;
         var displayHeight : Float;
 
-        if (Capabilitieses.screenResolutionX>=Capabilities.screenResolutionY) {
+        if (Capabilities.screenResolutionX>=Capabilities.screenResolutionY) {
             displayHeight = Capabilities.screenResolutionY;
             displayWidth = displayHeight * ratio;
             mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
