@@ -82,7 +82,7 @@ class AndroidWebView extends Sprite{
 		y = 0;
 	}
 	
-	public function setVerbsoe(verbose : Bool) {
+	public function setVerbose(verbose : Bool) {
 		setVerbose_jni(mJNIInstance, verbose);
 	}
 	
