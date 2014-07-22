@@ -2,9 +2,8 @@
 
 namespace openflwebview {
 
-    void test() {
-        NSLog(@"test");qsdsq
+    void test(){
+        NSLog(@"Hello world!");
     }
-
-
+    
 }

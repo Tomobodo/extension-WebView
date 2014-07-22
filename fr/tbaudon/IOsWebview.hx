@@ -1,16 +1,15 @@
 package fr.tbaudon;
+
 import cpp.Lib;
 import openfl.events.Event;
 
 class IOsWebView extends AbstractWebView {
 
-
-    private static var openflwebview_test = Lib.load("openflwebview","openflwebview_test",0);
-
+    //-----------------CPP LINKING---------------------
+    static var openflwebview_test = Lib.load("openflwebview", 'openflwebview_test',0);
 
     public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400) {
         super(defaultUrl, w, h);
-
         openflwebview_test();
     }
 
