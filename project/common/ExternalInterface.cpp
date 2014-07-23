@@ -13,14 +13,6 @@ using namespace openflwebview;
 
 extern "C" {
 
-    static value openflwebview_sample_method (value inputValue) {
-	
-        int returnValue = SampleMethod(val_int(inputValue));
-        return alloc_int(returnValue);
-	
-    }
-    DEFINE_PRIM (openflwebview_sample_method, 1);
-    
     static void openflwebview_test(){
         test();
     }

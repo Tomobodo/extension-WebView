@@ -13,7 +13,8 @@ import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
-public class OpenFLWebView implements Runnable{	
+public class
+        OpenFLWebView implements Runnable{
 	
 	private int mWidth;
 	private int mHeight;
