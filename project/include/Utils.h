@@ -5,7 +5,7 @@
 namespace openflwebview {
 	
 	void test();
-	
+	int create(const char* url, int width, int hright);
 }
 
 

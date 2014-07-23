@@ -5,12 +5,21 @@ import openfl.events.Event;
 
 class IOsWebView extends AbstractWebView {
 
-    //-----------------CPP LINKING---------------------
+    /**************************************************
+    / CPP LINKING
+    */
     static var openflwebview_test = Lib.load("openflwebview", 'openflwebview_test',0);
+    static var openflwebview_create = Lib.load("openflwebview", 'openflwebview_create', 3);
+
+    /**************************************************
+    * Members
+    **/
+    var mId : Int;
 
     public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400) {
+        mId = openflwebview_create(defaultUrl, w, h);
+        trace(mId);
         super(defaultUrl, w, h);
-        openflwebview_test();
     }
 
     override public function setVerbose(verbose : Bool){

@@ -7,7 +7,6 @@
 		<compilerflag value="-Iinclude"/>
 		
 		<file name="common/ExternalInterface.cpp"/>
-		<file name="common/OpenFLWebView.cpp"/>
 		
 	</files>
 

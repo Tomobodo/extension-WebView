@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+// Preparing delegate
+
 typedef void (*OnUrlChangingFunctionType)(NSString *);
 typedef void (*OnCloseClickedFunctionType)();
 
@@ -21,16 +23,60 @@ typedef void (*OnCloseClickedFunctionType)();
 }
 @end
 
+// webview
+// declaration
+
+@interface OpenFLWebView : UIWebView
+@property (assign) int mId;
+@property (assign) int mWidth;
+@property (assign) int mHeight;
+
++ (int)lastWebViewId;
+- (id)initWithUrlAndFrame: (NSString*)url width: (int)width height: (int)height;
+- (int)getId;
+@end
+
+// implementation
+
+@implementation OpenFLWebView
+
+@synthesize mId;
+@synthesize mWidth;
+@synthesize mHeight;
+
+static int mLastWebViewId;
+
+- (id)initWithUrlAndFrame: (NSString*)url width: (int)width height: (int)height{
+    mId = mLastWebViewId;
+    ++mLastWebViewId;
+    return self;
+}
+
+- (int)getId {
+    return mId;
+}
+
++ (int)lastWebViewId {
+    return mLastWebViewId;
+}
+@end
+
+// used from external interface
+// ??? can mix objective c and c++ in the same file / function ?
+
 namespace openflwebview {
     
     void test(){
         NSLog(@"Hello world!");
         
         OpenFLWebViewDelegate* webView = [[OpenFLWebViewDelegate alloc] init];
+        
         CGRect screen = [[UIScreen mainScreen] bounds];
         CGFloat screenScale = [[UIScreen mainScreen] scale];
         
-        UIWebView* instance = [[UIWebView alloc] initWithFrame:screen];
+        CGRect dim = CGRectMake(100, 100, 200, 200);
+        
+        UIWebView* instance = [[UIWebView alloc] initWithFrame:dim];
         instance.opaque = NO;
         instance.backgroundColor = [UIColor clearColor];
         [[[UIApplication sharedApplication] keyWindow] addSubview:instance];
@@ -39,6 +85,18 @@ namespace openflwebview {
         NSURLRequest *req = [[NSURLRequest alloc] initWithURL:_url];
         [instance loadRequest:req];
         
+    }
+    
+    /**
+     * Create a WebView
+     * @param url default url to load
+     * @param width webview width
+     * @param height webview height
+     */
+    int create(const char* url, int width, int height){
+        NSString* defaultUrl = [[NSString alloc] initWithUTF8String:url];
+        OpenFLWebView* webView = [[OpenFLWebView alloc] initWithUrlAndFrame:defaultUrl width:width height:height];
+        return [webView getId];
     }
     
 }

@@ -17,6 +17,12 @@ extern "C" {
         test();
     }
     DEFINE_PRIM(openflwebview_test, 0);
+    
+    static value openflwebview_create(value defaultUrl, value width, value height){
+        int rep = create(val_string(defaultUrl), val_int(width), val_int(height));
+        return alloc_int(rep);
+    }
+    DEFINE_PRIM(openflwebview_create, 3);
 
     int openflwebview_register_prims () { return 0; }
 }
