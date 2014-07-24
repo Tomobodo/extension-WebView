@@ -36,6 +36,7 @@ So it will always appear on top of your game, whatever you do.
 * Destroy the webView // done
 * Event for error, page not found, page loaded ect. // done
 * handle orientation change.
+
 ###iOS
 * Move the webView
 * Add the webview // done
