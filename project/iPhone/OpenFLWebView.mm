@@ -1,3 +1,5 @@
+#include <vector>
+
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
@@ -49,6 +51,10 @@ static int mLastWebViewId;
 - (id)initWithUrlAndFrame: (NSString*)url width: (int)width height: (int)height{
     mId = mLastWebViewId;
     ++mLastWebViewId;
+    NSURL* _url = [[NSURL alloc] initWithString:url];
+    NSURLRequest *req = [[NSURLRequest alloc] initWithURL:_url];
+    self = [self initWithFrame: CGRectMake( 0, 0, width, height)];
+    [self loadRequest:req];
     return self;
 }
 
@@ -87,6 +93,8 @@ namespace openflwebview {
         
     }
     
+    static std::vector<OpenFLWebView*> webViews;
+    
     /**
      * Create a WebView
      * @param url default url to load
@@ -96,7 +104,32 @@ namespace openflwebview {
     int create(const char* url, int width, int height){
         NSString* defaultUrl = [[NSString alloc] initWithUTF8String:url];
         OpenFLWebView* webView = [[OpenFLWebView alloc] initWithUrlAndFrame:defaultUrl width:width height:height];
+        webViews.push_back(webView);
         return [webView getId];
+    }
+    
+    /**
+     * get the webView with corresponding id
+     * @param id
+     **/
+    OpenFLWebView* getWebView(int id){
+        std::vector<OpenFLWebView*>::iterator iter = webViews.begin();
+        while(iter != webViews.end()){
+            OpenFLWebView* current = *iter;
+            if([current getId] == id)
+                return current;
+        }
+        return NULL;
+    }
+    
+    void onAdded(int id){
+        OpenFLWebView* webView = getWebView(id);
+        [[[UIApplication sharedApplication] keyWindow] addSubview: webView];
+    }
+    
+    void onRemoved(int id){
+        OpenFLWebView* webView = getWebView(id);
+        [webView removeFromSuperview];
     }
     
 }

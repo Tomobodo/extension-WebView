@@ -23,6 +23,18 @@ extern "C" {
         return alloc_int(rep);
     }
     DEFINE_PRIM(openflwebview_create, 3);
+    
+    static void openflwebview_onAdded(value webviewId){
+        int id = val_int(webviewId);
+        onAdded(id);
+    }
+    DEFINE_PRIM(openflwebview_onAdded, 1);
+    
+    static void openflwebview_onRemoved(value webviewId){
+        int id = val_int(webviewId);
+        onRemoved(id);
+    }
+    DEFINE_PRIM(openflwebview_onRemoved, 1);
 
     int openflwebview_register_prims () { return 0; }
 }

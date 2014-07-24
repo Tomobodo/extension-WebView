@@ -10,6 +10,8 @@ class IOsWebView extends AbstractWebView {
     */
     static var openflwebview_test = Lib.load("openflwebview", 'openflwebview_test',0);
     static var openflwebview_create = Lib.load("openflwebview", 'openflwebview_create', 3);
+    static var openflwebview_onAdded = Lib.load("openflwebview", "openflwebview_onAdded", 1);
+    static var openflwebview_onRemoved = Lib.load("openflwebview", "openflwebview_onRemoved", 1);
 
     /**************************************************
     * Members
@@ -43,11 +45,11 @@ class IOsWebView extends AbstractWebView {
     }
 
     override function onAddedToStage(e : Event){
-        trace("iOs onAddedToStage not done yet.");
+        openflwebview_onAdded(mId);
     }
 
     override function onRemovedFromStage(e : Event){
-        trace("iOs onRemovedFrionStage not done yet.");
+        openflwebview_onRemoved(mId);
     }
 
 }
