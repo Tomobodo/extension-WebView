@@ -29,9 +29,18 @@ So it will always appear on top of your game, whatever you do.
 
   
 ##RoadMap
+###Android
 * Move the webview // done 
+* Add the webview // done
 * Remove the webView // done
 * Destroy the webView // done
 * Event for error, page not found, page loaded ect. // done
 * handle orientation change.
-* iOS
+###iOS
+* Move the webView
+* Add the webview // done
+* Remove the webview // done
+* Destroy
+* Events
+* handle screen landscape orientation 
+* orientation change.
