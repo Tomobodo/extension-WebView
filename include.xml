@@ -5,4 +5,6 @@
 	
 	<java path="project/android" if="android" />
 	
+	<assets path="assets/ui" rename="webviewui" />
+	
 </project>

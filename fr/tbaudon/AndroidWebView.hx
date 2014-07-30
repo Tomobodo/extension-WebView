@@ -85,6 +85,8 @@ class AndroidWebView extends AbstractWebView{
 			case 'error' :
 				var description : String = param;
 				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, description));
+			case 'close' : 
+				dispatchEvent(new Event('close'));
 			default :
 				trace(event);
 		}
