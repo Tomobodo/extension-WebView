@@ -26,6 +26,7 @@ public class OpenFLWebView implements Runnable{
 	private int mY;
 	
 	private boolean mVerbose;
+	private boolean mAddClose;
 
 	private State mState;
 
@@ -41,16 +42,17 @@ public class OpenFLWebView implements Runnable{
 	private int mCloseOffsetY;
 
 	
-	public static OpenFLWebView create(HaxeObject object, int width, int height){
-		return new OpenFLWebView(object, width, height);
+	public static OpenFLWebView create(HaxeObject object, int width, int height, boolean closeBtn){
+		return new OpenFLWebView(object, width, height, closeBtn);
 	}
 	
-	public OpenFLWebView(HaxeObject object, int width, int height){
+	public OpenFLWebView(HaxeObject object, int width, int height, boolean closeBtn){
 		setDim(width, height);
 		setPosition(0, 0);
 		setVerbose(false);
 		
 		mObject = object;
+		mAddClose = closeBtn;
 		
 		mActivity = GameActivity.getInstance();
 		runState(State.INIT);
@@ -166,8 +168,8 @@ public class OpenFLWebView implements Runnable{
 		mCloseOffsetY = (int) (-closeBmp.getHeight() / 3);
 		
 		mCloseLayoutParams.setMargins(mX + mWidth + mCloseOffsetX, mY + mCloseOffsetY, 0, 0);
-		
-		mLayout.addView(mClose, mCloseLayoutParams);
+		if(mAddClose)
+			mLayout.addView(mClose, mCloseLayoutParams);
 		// webChromeClient
 		mWebView.setWebChromeClient(new WebChromeClient() {
 			@Override

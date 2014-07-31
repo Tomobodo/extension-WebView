@@ -27,7 +27,7 @@ class AndroidWebView extends AbstractWebView{
 	 * Sample : (Ljava/lang/String;I)Z = function(String, Int) : bool
 	 */
 	// STATIC METHOD
-	private static var create_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "create", "(Lorg/haxe/lime/HaxeObject;II)Lfr/tbaudon/OpenFLWebView;");
+	private static var create_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "create", "(Lorg/haxe/lime/HaxeObject;IIZ)Lfr/tbaudon/OpenFLWebView;");
 	
 	// MEMBER METHOD
 	private static var add_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "onAdded", "()V");
@@ -47,8 +47,8 @@ class AndroidWebView extends AbstractWebView{
 	var mQueue : Array<{func : Dynamic, params : Array<Dynamic>}>;
 	var mWebViewReady : Bool;
 	
-	public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400) {
-        mJNIInstance = create_jni(this, mWidth, mHeight);
+	public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400, close : Bool = false) {
+        mJNIInstance = create_jni(this, mWidth, mHeight, close);
         mQueue = new Array<{func : Dynamic, params : Array<Dynamic>}>();
         mWebViewReady = false;
 

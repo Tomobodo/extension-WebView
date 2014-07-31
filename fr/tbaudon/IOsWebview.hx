@@ -18,7 +18,7 @@ class IOsWebView extends AbstractWebView {
     **/
     var mId : Int;
 
-    public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400) {
+    public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400, close : Bool = false) {
         mId = openflwebview_create(defaultUrl, w, h);
         trace(mId);
         super(defaultUrl, w, h);
