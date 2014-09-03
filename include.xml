@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<ndll name="openflwebview" />
+	<ndll name="openflwebview" if="ios"/>
 	
 	<java path="project/android" if="android" />
+	
+	<assets path="assets/ui" rename="webviewui" />
 	
 </project>

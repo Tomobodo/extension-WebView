@@ -4,17 +4,20 @@ import org.haxe.lime.GameActivity;
 import org.haxe.lime.HaxeObject;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
-public class
-        OpenFLWebView implements Runnable{
+public class OpenFLWebView implements Runnable{
 	
 	private int mWidth;
 	private int mHeight;
@@ -23,25 +26,33 @@ public class
 	private int mY;
 	
 	private boolean mVerbose;
+	private boolean mAddClose;
 
 	private State mState;
 
 	private WebView mWebView;
+	private ImageView mClose;
 	private RelativeLayout mLayout;
 	private Activity mActivity;
 	private HaxeObject mObject;
 	private LayoutParams mLayoutParams;
+	private LayoutParams mCloseLayoutParams;
 	
-	public static OpenFLWebView create(HaxeObject object, int width, int height){
-		return new OpenFLWebView(object, width, height);
+	private int mCloseOffsetX;
+	private int mCloseOffsetY;
+
+	
+	public static OpenFLWebView create(HaxeObject object, int width, int height, boolean closeBtn){
+		return new OpenFLWebView(object, width, height, closeBtn);
 	}
 	
-	public OpenFLWebView(HaxeObject object, int width, int height){
+	public OpenFLWebView(HaxeObject object, int width, int height, boolean closeBtn){
 		setDim(width, height);
 		setPosition(0, 0);
 		setVerbose(false);
 		
 		mObject = object;
+		mAddClose = closeBtn;
 		
 		mActivity = GameActivity.getInstance();
 		runState(State.INIT);
@@ -125,6 +136,40 @@ public class
 		mLayout = new RelativeLayout(mActivity);
 		mLayout.addView(mWebView, mLayoutParams);
 		
+		DisplayMetrics metrics = new DisplayMetrics();
+		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		String dpi = "mdpi";
+		
+		if(metrics.densityDpi == DisplayMetrics.DENSITY_LOW)
+			dpi = "ldpi";
+		else if(metrics.densityDpi == DisplayMetrics.DENSITY_HIGH)
+			dpi = "hdpi";
+		else if(metrics.densityDpi >= 320)
+			dpi = "xhdpi";
+		
+		// close button
+		byte[] closeBytes = GameActivity.getResource("webviewui/close_"+dpi+".png");
+		
+		mClose = new ImageView(GameActivity.getContext());
+		
+		mClose.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				mObject.call2("onJNIEvent", "close", null);
+			}
+		});
+		
+		Bitmap closeBmp = BitmapFactory.decodeByteArray(closeBytes, 0, closeBytes.length);
+		mClose.setImageBitmap(closeBmp);
+		mCloseLayoutParams = new LayoutParams(closeBmp.getWidth(), closeBmp.getHeight());
+		
+		mCloseOffsetX = (int) (-closeBmp.getWidth() / 1.5);
+		mCloseOffsetY = (int) (-closeBmp.getHeight() / 3);
+		
+		mCloseLayoutParams.setMargins(mX + mWidth + mCloseOffsetX, mY + mCloseOffsetY, 0, 0);
+		if(mAddClose)
+			mLayout.addView(mClose, mCloseLayoutParams);
 		// webChromeClient
 		mWebView.setWebChromeClient(new WebChromeClient() {
 			@Override
@@ -177,6 +222,9 @@ public class
 		mLayoutParams.setMargins(mX, mY, 0, 0);
 		mLayoutParams.width = mWidth;
 		mLayoutParams.height = mHeight;
+
+		mCloseLayoutParams.setMargins(mX + mWidth + mCloseOffsetX, mY + mCloseOffsetY, 0, 0);
+		
 		mLayout.requestLayout();
 		if(mVerbose)
 			Log.i("trace","WebView : Update webview transformation : ("+mX+", "+mY+", "+mWidth+", "+mHeight+")");
