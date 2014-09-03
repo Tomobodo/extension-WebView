@@ -3,6 +3,23 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+// WebViewController
+@interface WebViewController : UIViewController
+
+@end
+
+@implementation WebViewController
+
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    
+}
+
+@end
+
 // Preparing delegate
 
 typedef void (*OnUrlChangingFunctionType)(NSString *);
@@ -36,6 +53,7 @@ typedef void (*OnCloseClickedFunctionType)();
 + (int)lastWebViewId;
 - (id)initWithUrlAndFrame: (NSString*)url width: (int)width height: (int)height;
 - (int)getId;
+
 @end
 
 // implementation

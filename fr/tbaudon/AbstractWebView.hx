@@ -58,11 +58,13 @@ class AbstractWebView extends Sprite {
             displayWidth = displayHeight * ratio;
             mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
             mOffsetY = 0;
+            trace("landscape");
         }else {
             displayWidth = Capabilities.screenResolutionX;
             displayHeight = displayWidth / ratio;
             mOffsetX = 0;
             mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
+            trace("portrait");
         }
 
         mScaleX = displayWidth / Lib.current.stage.stageWidth;

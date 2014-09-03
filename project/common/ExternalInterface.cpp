@@ -12,11 +12,6 @@
 using namespace openflwebview;
 
 extern "C" {
-
-    static void openflwebview_test(){
-        test();
-    }
-    DEFINE_PRIM(openflwebview_test, 0);
     
     static value openflwebview_create(value defaultUrl, value width, value height){
         int rep = create(val_string(defaultUrl), val_int(width), val_int(height));
