@@ -30,6 +30,24 @@ extern "C" {
         onRemoved(id);
     }
     DEFINE_PRIM(openflwebview_onRemoved, 1);
+    
+    static void openflwebview_setPos(value webviewId, value x, value y){
+        int id = val_int(webviewId);
+        int valX = val_int(x);
+        int valY = val_int(y);
+        
+        setPos(id,valX,valY);
+    }
+    DEFINE_PRIM(openflwebview_setPos, 3);
+    
+    static void openflwebview_setDim(value webviewId, value x, value y){
+        int id = val_int(webviewId);
+        int valX = val_int(x);
+        int valY = val_int(y);
+        
+        setDim(id,valX,valY);
+    }
+    DEFINE_PRIM(openflwebview_setDim, 3);
 
     int openflwebview_register_prims () { return 0; }
 }

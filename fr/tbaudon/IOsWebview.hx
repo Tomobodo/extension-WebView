@@ -1,7 +1,10 @@
 package fr.tbaudon;
 
-import cpp.Lib;
+
+import openfl.Lib;
 import openfl.events.Event;
+import openfl.display.Sprite;
+import openfl.system.Capabilities;
 
 class IOsWebView extends AbstractWebView {
 
@@ -9,9 +12,12 @@ class IOsWebView extends AbstractWebView {
     / CPP LINKING
     */
 
-    static var openflwebview_create = Lib.load("openflwebview", 'openflwebview_create', 3);
-    static var openflwebview_onAdded = Lib.load("openflwebview", "openflwebview_onAdded", 1);
-    static var openflwebview_onRemoved = Lib.load("openflwebview", "openflwebview_onRemoved", 1);
+    static var openflwebview_create = cpp.Lib.load("openflwebview", 'openflwebview_create', 3);
+    static var openflwebview_onAdded = cpp.Lib.load("openflwebview", "openflwebview_onAdded", 1);
+    static var openflwebview_onRemoved = cpp.Lib.load("openflwebview", "openflwebview_onRemoved", 1);
+    static var openflwebview_setPos = cpp.Lib.load("openflwebview", "openflwebview_setPos", 3);
+    static var openflwebview_setDim = cpp.Lib.load("openflwebview", "openflwebview_setDim", 3);
+
 
     /**************************************************
     * Members
@@ -28,7 +34,7 @@ class IOsWebView extends AbstractWebView {
     }
 
     override public function setPos(x : Float, y : Float){
-        trace("iOs setPos not done yet.");
+        openflwebview_setPos(mId, x, y);
     }
 
     override public function loadUrl(url : String){
@@ -36,7 +42,7 @@ class IOsWebView extends AbstractWebView {
     }
 
     override public function applyDim(w : Float, h : Float){
-        trace("iOs applyDim not done yet.");
+        openflwebview_setDim(mId,w,h);
     }
 
     override public function dispose(){
@@ -45,10 +51,43 @@ class IOsWebView extends AbstractWebView {
 
     override function onAddedToStage(e : Event){
         openflwebview_onAdded(mId);
+        x = x;
+        y = y;
     }
 
     override function onRemovedFromStage(e : Event){
         openflwebview_onRemoved(mId);
     }
 
+    override function computeScale(e : Event = null)
+    {
+        var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
+
+        var displayWidth : Float;
+        var displayHeight : Float;
+
+        if (ratio >= 1) {
+            displayHeight = Capabilities.screenResolutionX;
+            displayWidth = displayHeight * ratio;
+            mOffsetX = (Capabilities.screenResolutionY - displayWidth) / 2;
+            mOffsetY = 0;
+            trace("landscape");
+        }else {
+            displayWidth = Capabilities.screenResolutionX;
+            displayHeight = displayWidth / ratio;
+            mOffsetX = 0;
+            mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
+            trace("portrait");
+        }
+
+        mScaleX = displayWidth / Lib.current.stage.stageWidth;
+        mScaleY = displayHeight / Lib.current.stage.stageHeight;
+
+        if (e != null)
+        {
+            setDim(cast width, cast height);
+            x = x;
+            y = y;
+        }
+    }
 }

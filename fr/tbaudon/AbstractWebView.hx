@@ -54,7 +54,7 @@ class AbstractWebView extends Sprite {
         var displayWidth : Float;
         var displayHeight : Float;
 
-        if (Capabilities.screenResolutionX>=Capabilities.screenResolutionY) {
+        if (ratio >= 1) {
             displayHeight = Capabilities.screenResolutionY;
             displayWidth = displayHeight * ratio;
             mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
@@ -67,6 +67,8 @@ class AbstractWebView extends Sprite {
             mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
             trace("portrait");
         }
+
+        trace(displayWidth, displayHeight, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
 
         mScaleX = displayWidth / Lib.current.stage.stageWidth;
         mScaleY = displayHeight / Lib.current.stage.stageHeight;
