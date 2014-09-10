@@ -38,10 +38,10 @@ So it will always appear on top of your game, whatever you do.
 * handle orientation change.
 
 ###iOS
-* Move the webView
+* Move the webView // done
 * Add the webview // done
 * Remove the webview // done
 * Destroy
 * Events
-* handle screen landscape orientation 
-* orientation change.
+* handle screen landscape orientation // done
+* orientation change. // done
