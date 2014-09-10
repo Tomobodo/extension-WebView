@@ -121,4 +121,12 @@ namespace openflwebview {
             iter++;
         }
     }
+    
+    void loadUrl(int id, const char* url){
+        OpenFLWebView* webView = getWebView(id);
+        NSString* urlStr = [[NSString alloc] initWithUTF8String: url];
+        NSURL* _url = [[NSURL alloc] initWithString:urlStr ];
+        NSURLRequest *req = [[NSURLRequest alloc] initWithURL: _url];
+        [webView loadRequest: req];
+    }
 }

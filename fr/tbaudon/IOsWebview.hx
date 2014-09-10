@@ -17,6 +17,8 @@ class IOsWebView extends AbstractWebView {
     static var openflwebview_onRemoved = cpp.Lib.load("openflwebview", "openflwebview_onRemoved", 1);
     static var openflwebview_setPos = cpp.Lib.load("openflwebview", "openflwebview_setPos", 3);
     static var openflwebview_setDim = cpp.Lib.load("openflwebview", "openflwebview_setDim", 3);
+    static var openflwebview_dispose = cpp.Lib.load("openflwebview", "openflwebview_dispose", 1);
+    static var openflwebview_loadUrl = cpp.Lib.load("openflwebview", "openflwebview_loadUrl", 2);
 
 
     /**************************************************
@@ -38,7 +40,7 @@ class IOsWebView extends AbstractWebView {
     }
 
     override public function loadUrl(url : String){
-        trace("iOs loadUrl not done yet.");
+        openflwebview_loadUrl(mId, url);
     }
 
     override public function applyDim(w : Float, h : Float){
@@ -46,7 +48,7 @@ class IOsWebView extends AbstractWebView {
     }
 
     override public function dispose(){
-        trace("iOs dispose not done yet.");
+        openflwebview_dispose(mId);
     }
 
     override function onAddedToStage(e : Event){

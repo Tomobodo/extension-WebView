@@ -9,6 +9,8 @@ namespace openflwebview {
     void onRemoved(int id);
     void setPos(int id, int x, int y);
     void setDim(int id, int x, int y);
+    void dispose(int id);
+    void loadUrl(int id, const char* url);
     
 }
 

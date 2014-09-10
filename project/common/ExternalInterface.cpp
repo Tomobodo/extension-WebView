@@ -48,6 +48,18 @@ extern "C" {
         setDim(id,valX,valY);
     }
     DEFINE_PRIM(openflwebview_setDim, 3);
+    
+    static void openflwebview_dispose(value webviewId){
+        int id = val_int(webviewId);
+        dispose(id);
+    }
+    DEFINE_PRIM(openflwebview_dispose, 1);
+    
+    static void openflwebview_loadUrl(value webviewId, value url){
+        const char* urlval = val_string(url);
+        int id = val_int(webviewId);
+        loadUrl(id, urlval);
+    }
 
     int openflwebview_register_prims () { return 0; }
 }
