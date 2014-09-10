@@ -11,6 +11,8 @@
 
 using namespace openflwebview;
 
+AutoGCRoot *eval_onConnect = 0;
+
 extern "C" {
     
     static value openflwebview_create(value defaultUrl, value width, value height){
@@ -60,6 +62,7 @@ extern "C" {
         int id = val_int(webviewId);
         loadUrl(id, urlval);
     }
+    DEFINE_PRIM(openflwebview_loadUrl, 2);
 
     int openflwebview_register_prims () { return 0; }
 }

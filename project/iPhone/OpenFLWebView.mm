@@ -78,7 +78,6 @@ namespace openflwebview {
         int w = win.frame.size.width;
         int h = win.frame.size.height;
         
-        NSLog(@"w : %d h : %d", w, h);
         [parentController.view addSubview: getWebView(id)];
     }
     
