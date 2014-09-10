@@ -65,6 +65,7 @@ namespace openflwebview {
             OpenFLWebView* current = *iter;
             if([current getId] == id)
                 return current;
+            iter++;
         }
 
         return NULL;
@@ -108,4 +109,16 @@ namespace openflwebview {
         [webView setFrame: newFrame];
     }
     
+    void dispose(int id){
+        std::vector<OpenFLWebView*>::iterator iter = webViews.begin();
+
+        while(iter != webViews.end()){
+            OpenFLWebView* current = *iter;
+            if([current getId] == id){
+                webViews.erase(iter);
+                break;
+            }
+            iter++;
+        }
+    }
 }
