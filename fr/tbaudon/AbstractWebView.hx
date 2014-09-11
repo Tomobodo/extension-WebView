@@ -161,6 +161,13 @@ class AbstractWebView extends Sprite {
     }
 
     /**
+    *   Add a close button to the view
+    **/
+    public function addCloseBtn(){
+        throw 'addCloseBtn is not overridden.';
+    }
+
+    /**
      * Set the webView's dimmensions
      * @param w : Float width
      * @param h : Float height

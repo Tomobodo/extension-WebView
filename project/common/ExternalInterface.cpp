@@ -63,6 +63,12 @@ extern "C" {
         loadUrl(id, urlval);
     }
     DEFINE_PRIM(openflwebview_loadUrl, 2);
+    
+    static void openflwebview_addCloseBtn(value webviewId){
+        int id = val_int(webviewId);
+        addCloseBtn(id);
+    }
+    DEFINE_PRIM(openflwebview_addCloseBtn, 1);
 
     int openflwebview_register_prims () { return 0; }
 }

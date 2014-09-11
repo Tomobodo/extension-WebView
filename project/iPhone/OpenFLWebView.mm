@@ -8,15 +8,19 @@
 @interface OpenFLWebView : UIWebView
 
 @property (assign) int mId;
+@property (assign) UIButton* mCloseBtn;
 
 - (id) initWithUrlAndFrame: (NSString*)url width: (int)width height: (int)height;
-- (int)getId;
+- (int) getId;
+- (void) addCloseBtn;
+- (void) updateCloseFrame;
 
 @end
 
 @implementation OpenFLWebView
 
 @synthesize mId;
+@synthesize mCloseBtn;
 
 static int mLastId = 0;
 
@@ -33,6 +37,41 @@ static int mLastId = 0;
 
 - (int)getId {
     return mId;
+}
+
+- (void) addCloseBtn {
+    NSString *dpi = @"mdpi";
+    
+    CGFloat scale = [[UIScreen mainScreen] scale];
+    if(scale > 1)
+        dpi = @"xhdpi";
+    UIImage* closeImage = [[UIImage alloc] initWithContentsOfFile: [[NSBundle mainBundle] pathForResource: [NSString stringWithFormat:@"assets/webviewui/close_%@.png", dpi] ofType: nil]];
+    
+    if(closeImage == NULL) NSLog(@"NULL");
+    
+    mCloseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [mCloseBtn setImage:closeImage forState:UIControlStateNormal];
+    mCloseBtn.adjustsImageWhenHighlighted = NO;
+    
+    [self updateCloseFrame];
+    
+    [self addSubview:mCloseBtn];
+}
+
+- (void) updateCloseFrame {
+    if(mCloseBtn != NULL){
+        CGFloat scale = [[UIScreen mainScreen] scale];
+    
+        UIImage *closeImage = [mCloseBtn imageForState:UIControlStateNormal];
+    
+        CGFloat offsetX = closeImage.size.width / 1.5;
+        CGFloat offsetY = closeImage.size.height / 3;
+    
+        int x = self.frame.size.width - offsetX/scale;
+        int y = 0 - offsetY/scale;
+    
+        mCloseBtn.frame = CGRectMake(x,y,closeImage.size.width/scale, closeImage.size.height/scale);
+    }
 }
 
 @end
@@ -98,7 +137,7 @@ namespace openflwebview {
     }
     
     void setDim(int id, int x, int y){
-        UIWebView* webView = getWebView(id);
+        OpenFLWebView* webView = getWebView(id);
         
         CGFloat screenScale = [[UIScreen mainScreen] scale];
         
@@ -106,6 +145,7 @@ namespace openflwebview {
         newFrame.size = CGSizeMake(x / screenScale,y / screenScale);
         
         [webView setFrame: newFrame];
+        [webView updateCloseFrame];
     }
     
     void dispose(int id){
@@ -128,4 +168,10 @@ namespace openflwebview {
         NSURLRequest *req = [[NSURLRequest alloc] initWithURL: _url];
         [webView loadRequest: req];
     }
+    
+    void addCloseBtn(int id){
+        OpenFLWebView* webview = getWebView(id);
+        [webview addCloseBtn];
+    }
+    
 }

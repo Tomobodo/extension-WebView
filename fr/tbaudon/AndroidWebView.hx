@@ -65,6 +65,10 @@ class AndroidWebView extends AbstractWebView{
 		else
 			addToQueue(loadUrl_jni, [mJNIInstance, url]);
 	}
+
+    override public function addCloseBtn(){
+        trace("Nothing happens.,,");
+    }
 	
 	function onWebViewInited() {
 		mWebViewReady = true;

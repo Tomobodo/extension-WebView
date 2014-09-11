@@ -11,6 +11,7 @@ namespace openflwebview {
     void setDim(int id, int x, int y);
     void dispose(int id);
     void loadUrl(int id, const char* url);
+    void addCloseBtn(int id);
     
 }
 

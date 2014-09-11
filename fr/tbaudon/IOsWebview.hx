@@ -19,7 +19,7 @@ class IOsWebView extends AbstractWebView {
     static var openflwebview_setDim = cpp.Lib.load("openflwebview", "openflwebview_setDim", 3);
     static var openflwebview_dispose = cpp.Lib.load("openflwebview", "openflwebview_dispose", 1);
     static var openflwebview_loadUrl = cpp.Lib.load("openflwebview", "openflwebview_loadUrl", 2);
-
+    static var openflwebview_addCloseBtn = cpp.Lib.load("openflwebview", "openflwebview_addCloseBtn", 1);
 
     /**************************************************
     * Members
@@ -29,6 +29,7 @@ class IOsWebView extends AbstractWebView {
     public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400, close : Bool = false) {
         mId = openflwebview_create(defaultUrl, w, h);
         super(defaultUrl, w, h);
+        if(close) addCloseBtn();
     }
 
     override public function setVerbose(verbose : Bool){
@@ -41,6 +42,10 @@ class IOsWebView extends AbstractWebView {
 
     override public function loadUrl(url : String){
         openflwebview_loadUrl(mId, url);
+    }
+
+    override public function addCloseBtn(){
+        openflwebview_addCloseBtn(mId);
     }
 
     override public function applyDim(w : Float, h : Float){
