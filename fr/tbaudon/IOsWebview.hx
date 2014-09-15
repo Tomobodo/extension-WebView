@@ -20,6 +20,7 @@ class IOsWebView extends AbstractWebView {
     static var openflwebview_dispose = cpp.Lib.load("openflwebview", "openflwebview_dispose", 1);
     static var openflwebview_loadUrl = cpp.Lib.load("openflwebview", "openflwebview_loadUrl", 2);
     static var openflwebview_addCloseBtn = cpp.Lib.load("openflwebview", "openflwebview_addCloseBtn", 1);
+    static var openflwebview_setCallback = cpp.Lib.load("openflwebview", "openflwebview_setCallback", 1);
 
     /**************************************************
     * Members
@@ -30,6 +31,15 @@ class IOsWebView extends AbstractWebView {
         mId = openflwebview_create(defaultUrl, w, h);
         super(defaultUrl, w, h);
         if(close) addCloseBtn();
+        openflwebview_setCallback(onIosEvent);
+    }
+
+    function onIosEvent(name : String, params : String){
+        trace(name, params);
+        switch(name){
+            case "close" :
+                dispatchEvent(new Event('close'));
+        }
     }
 
     override public function setVerbose(verbose : Bool){

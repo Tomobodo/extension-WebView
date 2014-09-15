@@ -11,9 +11,13 @@
 
 using namespace openflwebview;
 
-AutoGCRoot *eval_onConnect = 0;
+AutoGCRoot *eval_onEvent = 0;
 
 extern "C" {
+    
+    void openflwebview_sendEvent(const char* event, const char* params){
+        val_call2(eval_onEvent->get(), alloc_string(event), alloc_string(params));
+    }
     
     static value openflwebview_create(value defaultUrl, value width, value height){
         int rep = create(val_string(defaultUrl), val_int(width), val_int(height));
@@ -69,6 +73,11 @@ extern "C" {
         addCloseBtn(id);
     }
     DEFINE_PRIM(openflwebview_addCloseBtn, 1);
+    
+    static void openflwebview_setCallback(value onCall){
+        eval_onEvent = new AutoGCRoot(onCall);
+    }
+    DEFINE_PRIM(openflwebview_setCallback, 1);
 
     int openflwebview_register_prims () { return 0; }
 }
