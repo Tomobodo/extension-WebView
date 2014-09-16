@@ -9,13 +9,14 @@ add OpenFLWebView in your haxelib.
 Then :
 
   ```haxe
-  var mWebView = new WebView("http://wwww.myWebSite.net", 800,800);
+  var mWebView = new WebView("http://wwww.myWebSite.net", 800,800,true);// true specifies that we want to add a close button to the view.
   mWebView.x = 200;
   mWebView.y = 100;
   addChild(mWebView);
   mWebView.addEventlistener(ProgressEvent.PROGRESS, onProgress);
   mWebView.addEventlistener(Event.COMPLETE, onLoadComplete);
   mWebView.addEventlistener(ErrorEvent.ERROR, onLoadError);
+  mWebView.addEventlistener(‘close’, onClosed);
   //later
   mWebView.loadUrl("newUrl");
   //remove
