@@ -13,21 +13,21 @@ extern "C"{
 @interface OpenFLWebView : UIWebView
 
 @property (assign) int mId;
-@property (assign) UIButton* mCloseBtn;
+@property (strong) UIImageView* mCloseView;
 
 - (id) initWithUrlAndFrame: (NSString*)url width: (int)width height: (int)height;
 - (int) getId;
 - (void) addCloseBtn;
 - (void) updateCloseFrame;
 - (void) closePressed;
-- (UIButton*) getButton;
+- (UIImageView*) getButton;
 
 @end
 
 @implementation OpenFLWebView
 
 @synthesize mId;
-@synthesize mCloseBtn;
+@synthesize mCloseView;
 
 static int mLastId = 0;
 
@@ -55,24 +55,23 @@ static int mLastId = 0;
     
     UIImage* closeImage = [[UIImage alloc] initWithContentsOfFile: [[NSBundle mainBundle] pathForResource: [NSString stringWithFormat:@"assets/webviewui/close_%@.png", dpi] ofType: nil]];
     
-    mCloseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    mCloseBtn.adjustsImageWhenHighlighted = NO;
-    //mCloseBtn.backgroundColor = [UIColor whiteColor];
+    mCloseView = [[UIImageView alloc] initWithImage: closeImage];
+    mCloseView.userInteractionEnabled = YES;
     
     [self updateCloseFrame];
 
-    [mCloseBtn setImage:closeImage forState:UIControlStateNormal];
     //[mCloseBtn setImageEdgeInsets: UIEdgeInsetsMake( -20/scale, -20/scale, -20/scale, -20/scale)];
-    [mCloseBtn addTarget:self action:@selector(closePressed) forControlEvents:UIControlEventTouchUpInside];
-    
-    [[self superview] addSubview:mCloseBtn];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closePressed)];
+    tap.numberOfTapsRequired = 1;
+    [mCloseView addGestureRecognizer: tap];
+    [[self superview] addSubview:mCloseView];
 }
 
 - (void) updateCloseFrame {
-    if(mCloseBtn != NULL){
+    if(mCloseView != NULL){
         CGFloat scale = [[UIScreen mainScreen] scale];
     
-        UIImage *closeImage = [mCloseBtn imageForState:UIControlStateNormal];
+        UIImage *closeImage = mCloseView.image;
     
         CGFloat offsetX = (closeImage.size.width / 1.5);
         CGFloat offsetY = (closeImage.size.height / 3);
@@ -80,7 +79,7 @@ static int mLastId = 0;
         int x = self.frame.origin.x + self.frame.size.width - offsetX/scale;
         int y = self.frame.origin.y + 0 - offsetY/scale;
     
-        mCloseBtn.frame = CGRectMake(x,y,closeImage.size.width/scale, closeImage.size.height/scale);
+        mCloseView.frame = CGRectMake(x,y,closeImage.size.width/scale, closeImage.size.height/scale);
     }
 }
 
@@ -88,8 +87,8 @@ static int mLastId = 0;
     openflwebview_sendEvent("close", "none");
 }
 
-- (UIButton*)getButton {
-    return mCloseBtn;
+- (UIImageView*)getButton {
+    return mCloseView;
 }
 
 @end
@@ -136,7 +135,7 @@ namespace openflwebview {
     
         [parentController.view addSubview: view];
         
-        UIButton* button = [view getButton];
+        UIImageView* button = [view getButton];
         if(button != NULL)
             [[view superview] addSubview: button];
     }
@@ -145,7 +144,7 @@ namespace openflwebview {
         OpenFLWebView* webView = getWebView(id);
         
         
-        UIButton* button = [webView getButton];
+        UIImageView* button = [webView getButton];
         if(button != NULL)
             [button removeFromSuperview];
             
