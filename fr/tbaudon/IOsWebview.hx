@@ -79,23 +79,42 @@ class IOsWebView extends AbstractWebView {
     override function computeScale(e : Event = null)
     {
         var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
+        var screenRatio = Capabilities.screenResolutionY / Capabilities.screenResolutionX;
 
         var displayWidth : Float;
         var displayHeight : Float;
 
-        if (ratio >= 1) {
-            displayHeight = Capabilities.screenResolutionX;
-            displayWidth = displayHeight * ratio;
-            mOffsetX = (Capabilities.screenResolutionY - displayWidth) / 2;
-            mOffsetY = 0;
-            trace("landscape");
-        }else {
-            displayWidth = Capabilities.screenResolutionX;
-            displayHeight = displayWidth / ratio;
-            mOffsetX = 0;
-            mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
-            trace("portrait");
-        }
+        if(screenRatio < ratio)
+            if (ratio >= 1) {
+                displayWidth = Capabilities.screenResolutionY;
+                displayHeight = displayWidth / ratio;
+
+                mOffsetX = (Capabilities.screenResolutionY - displayWidth) / 2;
+                mOffsetY = (Capabilities.screenResolutionX - displayHeight) / 2;
+            }else {
+                displayWidth = Capabilities.screenResolut ionX;
+                displayHeight = displayWidth / ratio;
+
+                mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+                mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
+            }
+        else
+            if (ratio >= 1) {
+
+                displayHeight = Capabilities.screenResolutionX;
+                displayWidth = displayHeight * ratio;
+
+                mOffsetX = (Capabilities.screenResolutionY - displayWidth) / 2;
+                mOffsetY = (Capabilities.screenResolutionX - displayHeight) / 2;
+                trace("landscape");
+            }else {
+                displayWidth = Capabilities.screenResolutionX;
+                displayHeight = displayWidth * ratio;
+
+                mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+                mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
+                trace("portrait");
+            }
 
         mScaleX = displayWidth / Lib.current.stage.stageWidth;
         mScaleY = displayHeight / Lib.current.stage.stageHeight;
