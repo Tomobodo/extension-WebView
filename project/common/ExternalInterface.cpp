@@ -14,7 +14,7 @@ using namespace openflwebview;
 AutoGCRoot *eval_onEvent = 0;
 
 extern "C" {
-    
+ 
     void openflwebview_sendEvent(const char* event, const char* params){
         val_call2(eval_onEvent->get(), alloc_string(event), alloc_string(params));
     }
