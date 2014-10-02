@@ -8,4 +8,7 @@
 	
 	<assets path="assets/ui" rename="webviewui" />
 	
+	<haxelib name="cocktail" if="flash" />
+	<haxflag name="–-remap js:cocktail" if="flash" />
+	
 </project>
