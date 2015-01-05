@@ -76,7 +76,7 @@ class IOsWebView extends AbstractWebView {
         openflwebview_onRemoved(mId);
     }
 
-    override function computeScale(e : Event = null)
+    /*override function computeScale(e : Event = null)
     {
         var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
         var screenRatio = Capabilities.screenResolutionY / Capabilities.screenResolutionX;
@@ -92,7 +92,7 @@ class IOsWebView extends AbstractWebView {
                 mOffsetX = (Capabilities.screenResolutionY - displayWidth) / 2;
                 mOffsetY = (Capabilities.screenResolutionX - displayHeight) / 2;
             }else {
-                displayWidth = Capabilities.screenResolut ionX;
+                displayWidth = Capabilities.screenResolutionX;
                 displayHeight = displayWidth / ratio;
 
                 mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
@@ -125,5 +125,5 @@ class IOsWebView extends AbstractWebView {
             x = x;
             y = y;
         }
-    }
+    }*/
 }

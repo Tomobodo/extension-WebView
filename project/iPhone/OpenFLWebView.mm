@@ -157,7 +157,9 @@ namespace openflwebview {
         CGFloat screenScale = [[UIScreen mainScreen] scale];
         
         CGRect newFrame = webView.frame;
-        newFrame.origin = CGPointMake(x / screenScale,y / screenScale);
+       // newFrame.origin = CGPointMake(x / screenScale,y / screenScale);
+		NSLog(@"set view position %i,%i", x, y);
+		newFrame.origin = CGPointMake(x / screenScale,y / screenScale);
         
         [webView setFrame: newFrame];
     }
