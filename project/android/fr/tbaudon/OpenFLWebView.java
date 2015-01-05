@@ -206,7 +206,7 @@ public class OpenFLWebView implements Runnable{
 	private void add(){
 		DisplayMetrics metrics = new DisplayMetrics();
 		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		mActivity.addContentView(mLayout, new LayoutParams(metrics.widthPixels, metrics.widthPixels));
+		mActivity.addContentView(mLayout, new LayoutParams(metrics.widthPixels, metrics.heightPixels));
 		if(mVerbose)
 			Log.i("trace","WebView : Added webview.");
 	}

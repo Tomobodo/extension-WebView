@@ -53,6 +53,7 @@ class AbstractWebView extends Sprite {
 
         var displayWidth : Float;
         var displayHeight : Float;
+		
 
         if (ratio >= 1) {
             displayHeight = Capabilities.screenResolutionY;
