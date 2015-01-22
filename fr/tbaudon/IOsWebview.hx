@@ -1,6 +1,5 @@
 package fr.tbaudon;
-
-
+import flash.system.Capabilities;
 import openfl.Lib;
 import openfl.events.Event;
 import openfl.display.Sprite;
@@ -76,21 +75,40 @@ class IOsWebView extends AbstractWebView {
         openflwebview_onRemoved(mId);
     }
 
-    /*override function computeScale(e : Event = null)
+    override function computeScale(e : Event = null)
     {
         var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
-        var screenRatio = Capabilities.screenResolutionY / Capabilities.screenResolutionX;
+        var screenRatio = Capabilities.screenResolutionX / Capabilities.screenResolutionY;
+
+        trace(ratio, screenRatio);
 
         var displayWidth : Float;
         var displayHeight : Float;
 
-        if(screenRatio < ratio)
+        /*
+        trace(Capabilities.screenResolutionY);
+
+        if(Capabilities.screenResolutionX >= Capabilities.screenResolutionY){
+            displayWidth = Capabilities.screenResolutionX;
+            displayHeight = Capabilities.screenResolutionX / ratio;
+
+            mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+            mOffsetY = (Capabilities.screenResolutionY - displayHeight/ratio) / 2;
+        }else{
+            displayWidth = Capabilities.screenResolutionY;
+            displayHeight = Capabilities.screenResolutionY / ratio;
+
+            mOffsetX = (Capabilities.screenResolutionY - displayWidth) / 2;
+            mOffsetY = (Capabilities.screenResolutionX - displayHeight) / 2;
+        }*/
+
+        /*if(screenRatio < ratio)
             if (ratio >= 1) {
-                displayWidth = Capabilities.screenResolutionY;
+                displayWidth = Capabilities.screenResolutionX;
                 displayHeight = displayWidth / ratio;
 
-                mOffsetX = (Capabilities.screenResolutionY - displayWidth) / 2;
-                mOffsetY = (Capabilities.screenResolutionX - displayHeight) / 2;
+                mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+                mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
             }else {
                 displayWidth = Capabilities.screenResolutionX;
                 displayHeight = displayWidth / ratio;
@@ -101,11 +119,11 @@ class IOsWebView extends AbstractWebView {
         else
             if (ratio >= 1) {
 
-                displayHeight = Capabilities.screenResolutionX;
+                displayHeight = Capabilities.screenResolutionY;
                 displayWidth = displayHeight * ratio;
 
-                mOffsetX = (Capabilities.screenResolutionY - displayWidth) / 2;
-                mOffsetY = (Capabilities.screenResolutionX - displayHeight) / 2;
+                mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+                mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
                 trace("landscape");
             }else {
                 displayWidth = Capabilities.screenResolutionX;
@@ -115,6 +133,30 @@ class IOsWebView extends AbstractWebView {
                 mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
                 trace("portrait");
             }
+        */
+
+        // landscape app
+        if(screenRatio >= 1){
+            displayWidth = Capabilities.screenResolutionX;
+            displayHeight = displayWidth / ratio;
+            if(displayHeight > Capabilities.screenResolutionY){
+                displayHeight = Capabilities.screenResolutionY;
+                displayWidth = displayHeight * ratio;
+            }
+
+            mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+            mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
+        }else {
+            displayHeight = Capabilities.screenResolutionY;
+            displayWidth = displayHeight * ratio;
+            if(displayWidth > Capabilities.screenResolutionX){
+                displayWidth = Capabilities.screenResolutionX;
+                displayHeight = Capabilities.screenResolutionX / ratio;
+            }
+
+            mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+            mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
+        }
 
         mScaleX = displayWidth / Lib.current.stage.stageWidth;
         mScaleY = displayHeight / Lib.current.stage.stageHeight;
@@ -125,5 +167,5 @@ class IOsWebView extends AbstractWebView {
             x = x;
             y = y;
         }
-    }*/
+    }
 }
