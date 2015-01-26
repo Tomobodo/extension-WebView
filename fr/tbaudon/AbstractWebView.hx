@@ -50,29 +50,40 @@ class AbstractWebView extends Sprite {
     function computeScale(e : Event = null)
     {
         var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
+        var screenRatio = Capabilities.screenResolutionX / Capabilities.screenResolutionY;
+
+        trace(ratio, screenRatio);
 
         var displayWidth : Float;
         var displayHeight : Float;
-		
 
-        if (ratio >= 1) {
-            displayHeight = Capabilities.screenResolutionY;
-            displayWidth = displayHeight * ratio;
-            mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
-            mOffsetY = 0;
-            trace("landscape");
-        }else {
+        // landscape app
+        if(screenRatio >= 1){
             displayWidth = Capabilities.screenResolutionX;
             displayHeight = displayWidth / ratio;
-            mOffsetX = 0;
-            mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
-            trace("portrait");
-        }
+            if(displayHeight >= Capabilities.screenResolutionY){
+                displayHeight = Capabilities.screenResolutionY;
+                displayWidth = displayHeight * ratio;
+            }
 
-        trace(displayWidth, displayHeight, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
+            mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+            mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
+        }else {
+            displayHeight = Capabilities.screenResolutionY;
+            displayWidth = displayHeight * ratio;
+            if(displayWidth >= Capabilities.screenResolutionX){
+                displayWidth = Capabilities.screenResolutionX;
+                displayHeight = Capabilities.screenResolutionX / ratio;
+            }
+
+            mOffsetX = (Capabilities.screenResolutionX - displayWidth) / 2;
+            mOffsetY = (Capabilities.screenResolutionY - displayHeight) / 2;
+        }
 
         mScaleX = displayWidth / Lib.current.stage.stageWidth;
         mScaleY = displayHeight / Lib.current.stage.stageHeight;
+		
+		trace(displayWidth, Capabilities.screenResolutionX, displayHeight, Capabilities.screenResolutionY);
 
         if (e != null)
         {

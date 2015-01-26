@@ -6,6 +6,7 @@ import org.haxe.lime.HaxeObject;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,7 @@ public class OpenFLWebView implements Runnable{
 	
 	private boolean mVerbose;
 	private boolean mAddClose;
+	private boolean mWebViewAdded;
 
 	private State mState;
 
@@ -46,10 +48,36 @@ public class OpenFLWebView implements Runnable{
 		return new OpenFLWebView(object, width, height, closeBtn);
 	}
 	
+	public static int getRealHeight(){
+		int height = 100;
+		try {
+			Point size = new Point();
+			GameActivity.getInstance().getWindowManager().getDefaultDisplay().getRealSize(size);
+			height = size.y;
+		}catch (NoSuchMethodError e){
+			height = GameActivity.getInstance().getWindowManager().getDefaultDisplay().getHeight();
+		}
+		return height;
+	}
+	
+	public static int getRealWidth(){
+		int width = 100;
+		try {
+			Point size = new Point();
+			GameActivity.getInstance().getWindowManager().getDefaultDisplay().getRealSize(size);
+			width = size.x;
+		}catch (NoSuchMethodError e){
+			width = GameActivity.getInstance().getWindowManager().getDefaultDisplay().getHeight();
+		}
+		return width;
+	}
+	
 	public OpenFLWebView(HaxeObject object, int width, int height, boolean closeBtn){
 		setDim(width, height);
 		setPosition(0, 0);
 		setVerbose(false);
+		
+		mWebViewAdded = false;
 		
 		mObject = object;
 		mAddClose = closeBtn;
@@ -132,12 +160,17 @@ public class OpenFLWebView implements Runnable{
 	
 	private void initWebView(){
 		mWebView = new WebView(mActivity);
-		mLayoutParams = new LayoutParams(mWidth,mHeight);
-		mLayout = new RelativeLayout(mActivity);
-		mLayout.addView(mWebView, mLayoutParams);
 		
 		DisplayMetrics metrics = new DisplayMetrics();
 		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		
+		mLayoutParams = new LayoutParams(mWidth,mHeight);
+		mLayout = new RelativeLayout(mActivity);
+		
+		//mLayout.addView(mWebView, mLayoutParams);
+		
+		mActivity.addContentView(mLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		
 		String dpi = "mdpi";
 		
 		if(metrics.densityDpi == DisplayMetrics.DENSITY_LOW)
@@ -206,7 +239,12 @@ public class OpenFLWebView implements Runnable{
 	private void add(){
 		DisplayMetrics metrics = new DisplayMetrics();
 		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		mActivity.addContentView(mLayout, new LayoutParams(metrics.widthPixels, metrics.heightPixels));
+		
+		if(!mWebViewAdded){
+			mLayout.addView(mWebView, mLayoutParams);
+			mWebViewAdded = true;
+		}
+					
 		if(mVerbose)
 			Log.i("trace","WebView : Added webview.");
 	}
@@ -214,8 +252,8 @@ public class OpenFLWebView implements Runnable{
 	private void remove(){
 		if(mVerbose)
 			Log.i("trace","WebView : Removed webview.");
-		ViewGroup vg = (ViewGroup)(mLayout.getParent());
-		vg.removeView(mLayout);
+		mLayout.removeAllViews();
+		mWebViewAdded = false;
 	}
 	
 	private void update() {

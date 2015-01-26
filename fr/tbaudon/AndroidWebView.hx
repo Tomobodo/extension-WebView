@@ -28,6 +28,8 @@ class AndroidWebView extends AbstractWebView{
 	 */
 	// STATIC METHOD
 	private static var create_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "create", "(Lorg/haxe/lime/HaxeObject;IIZ)Lfr/tbaudon/OpenFLWebView;");
+	private static var getRealHeight_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "getRealHeight", "()I");
+	private static var getRealWidth_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "getRealWidth", "()I");
 	
 	// MEMBER METHOD
 	private static var add_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "onAdded", "()V");
@@ -156,5 +158,54 @@ class AndroidWebView extends AbstractWebView{
 		if(canPush)
 			mQueue.push( { func:object, params:array } );
 	}
+	
+	override function computeScale(e : Event = null)
+    {
+		var screenWidth : Int = getRealWidth_jni();
+		var screenHeight : Int = getRealHeight_jni();
+		
+        var ratio = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
+        var screenRatio = screenWidth / screenHeight;
+
+        trace(ratio, screenRatio);
+
+        var displayWidth : Float;
+        var displayHeight : Float;
+
+        // landscape app
+        if(screenRatio >= 1){
+            displayWidth = screenWidth;
+            displayHeight = displayWidth / ratio;
+            if(displayHeight >= screenHeight){
+                displayHeight = screenHeight;
+                displayWidth = displayHeight * ratio;
+            }
+
+            mOffsetX = (screenWidth - displayWidth) / 2;
+            mOffsetY = (screenHeight - displayHeight) / 2;
+        }else {
+            displayHeight = screenHeight;
+            displayWidth = displayHeight * ratio;
+            if(displayWidth >= screenWidth){
+                displayWidth = screenWidth;
+                displayHeight = screenWidth / ratio;
+            }
+
+            mOffsetX = (screenWidth - displayWidth) / 2;
+            mOffsetY = (screenHeight - displayHeight) / 2;
+        }
+
+        mScaleX = displayWidth / Lib.current.stage.stageWidth;
+        mScaleY = displayHeight / Lib.current.stage.stageHeight;
+		
+		trace(displayWidth, screenWidth, displayHeight, screenHeight);
+
+        if (e != null)
+        {
+            setDim(cast width, cast height);
+            x = x;
+            y = y;
+        }
+    }
 	
 }
