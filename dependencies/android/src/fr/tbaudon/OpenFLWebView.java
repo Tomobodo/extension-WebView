@@ -1,16 +1,17 @@
 package fr.tbaudon;
 
-import org.haxe.lime.GameActivity;
+import org.haxe.extension.Extension;
+
 import org.haxe.lime.HaxeObject;
 
+import fr.tbaudon.openflwebview.R;
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -18,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
-public class OpenFLWebView implements Runnable{
+public class OpenFLWebView extends Extension implements Runnable{
 	
 	private int mWidth;
 	private int mHeight;
@@ -52,10 +53,10 @@ public class OpenFLWebView implements Runnable{
 		int height = 100;
 		try {
 			Point size = new Point();
-			GameActivity.getInstance().getWindowManager().getDefaultDisplay().getRealSize(size);
+			mainActivity.getWindowManager().getDefaultDisplay().getRealSize(size);
 			height = size.y;
 		}catch (NoSuchMethodError e){
-			height = GameActivity.getInstance().getWindowManager().getDefaultDisplay().getHeight();
+			mainActivity.getWindowManager().getDefaultDisplay().getHeight();
 		}
 		return height;
 	}
@@ -64,15 +65,20 @@ public class OpenFLWebView implements Runnable{
 		int width = 100;
 		try {
 			Point size = new Point();
-			GameActivity.getInstance().getWindowManager().getDefaultDisplay().getRealSize(size);
+			mainActivity.getWindowManager().getDefaultDisplay().getRealSize(size);
 			width = size.x;
 		}catch (NoSuchMethodError e){
-			width = GameActivity.getInstance().getWindowManager().getDefaultDisplay().getHeight();
+			mainActivity.getWindowManager().getDefaultDisplay().getHeight();
 		}
 		return width;
 	}
 	
+	public OpenFLWebView() {
+		super();
+	}
+	
 	public OpenFLWebView(HaxeObject object, int width, int height, boolean closeBtn){
+		super();
 		setDim(width, height);
 		setPosition(0, 0);
 		setVerbose(false);
@@ -82,7 +88,7 @@ public class OpenFLWebView implements Runnable{
 		mObject = object;
 		mAddClose = closeBtn;
 		
-		mActivity = GameActivity.getInstance();
+		mActivity = mainActivity;
 		runState(State.INIT);
 	}
 	
@@ -110,8 +116,12 @@ public class OpenFLWebView implements Runnable{
 		if(mWebView != null) runState(State.UPDATE);
 	}
 	
-	public void loadUrl(String url){
-		mWebView.loadUrl(url);
+	public void loadUrl(final String url){
+		mainActivity.runOnUiThread(new Runnable() {
+			public void run() {
+				mWebView.loadUrl(url);
+			}
+		});
 	}
 	
 	public void onAdded() {
@@ -167,42 +177,32 @@ public class OpenFLWebView implements Runnable{
 		mLayoutParams = new LayoutParams(mWidth,mHeight);
 		mLayout = new RelativeLayout(mActivity);
 		
-		//mLayout.addView(mWebView, mLayoutParams);
-		
 		mActivity.addContentView(mLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		
-		String dpi = "mdpi";
-		
-		if(metrics.densityDpi == DisplayMetrics.DENSITY_LOW)
-			dpi = "ldpi";
-		else if(metrics.densityDpi == DisplayMetrics.DENSITY_HIGH)
-			dpi = "hdpi";
-		else if(metrics.densityDpi >= 320)
-			dpi = "xhdpi";
-		
 		// close button
-		byte[] closeBytes = GameActivity.getResource("webviewui/close_"+dpi+".png");
 		
-		mClose = new ImageView(GameActivity.getContext());
+		mClose = new ImageView(mainContext);
 		
 		mClose.setOnClickListener(new View.OnClickListener() {
-			
 			@Override
 			public void onClick(View arg0) {
 				mObject.call2("onJNIEvent", "close", null);
 			}
 		});
 		
-		Bitmap closeBmp = BitmapFactory.decodeByteArray(closeBytes, 0, closeBytes.length);
-		mClose.setImageBitmap(closeBmp);
-		mCloseLayoutParams = new LayoutParams(closeBmp.getWidth(), closeBmp.getHeight());
+		RelativeLayout closeLayout = new RelativeLayout(mainContext);
+		LayoutParams closeLP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		mWebView.addView(closeLayout, closeLP);
 		
-		mCloseOffsetX = (int) (-closeBmp.getWidth() / 1.5);
-		mCloseOffsetY = (int) (-closeBmp.getHeight() / 3);
+		mCloseLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		mCloseLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		mClose.setLayoutParams(mCloseLayoutParams);
 		
-		mCloseLayoutParams.setMargins(mX + mWidth + mCloseOffsetX, mY + mCloseOffsetY, 0, 0);
+		mClose.setImageResource(R.drawable.close);
+		
 		if(mAddClose)
-			mLayout.addView(mClose, mCloseLayoutParams);
+			closeLayout.addView(mClose);
+		
 		// webChromeClient
 		mWebView.setWebChromeClient(new WebChromeClient() {
 			@Override
@@ -260,8 +260,6 @@ public class OpenFLWebView implements Runnable{
 		mLayoutParams.setMargins(mX, mY, 0, 0);
 		mLayoutParams.width = mWidth;
 		mLayoutParams.height = mHeight;
-
-		mCloseLayoutParams.setMargins(mX + mWidth + mCloseOffsetX, mY + mCloseOffsetY, 0, 0);
 		
 		mLayout.requestLayout();
 		if(mVerbose)

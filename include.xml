@@ -4,9 +4,10 @@
 	
 	<ndll name="openflwebview" if="ios"/>
 	
-	<java path="project/android" if="android" />
-	
 	<assets path="assets/ui" rename="webviewui" />
+	
+	<dependency name="openflwebview" path="dependencies/android" if="android" />
+	<android extension="fr.tbaudon.OpenFLWebView" />
 	
 	<haxelib name="cocktail" if="flash" />
 	<haxflag name="–-remap js:cocktail" if="flash" />
